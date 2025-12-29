@@ -1,0 +1,116 @@
+// src/pages/index.tsx
+import * as React from "react";
+import { graphql, PageProps, Link } from "gatsby";
+import styled from "styled-components";
+import Tile from "../components/Tile/Tile";
+import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
+import Navbar from "../components/Navbar/navbar";
+import StyleWrapper from "../styles/StyleWrapper";
+
+
+type LatestNode = {
+  metric_id: string;
+  points: { t: string; v: any }[];
+  parent: { name: string };
+};
+
+
+type IndexPageData = {
+  allMetricDefinition: {
+    nodes: MetricDefinitionNode[];
+  };
+  allMetricLatest: {
+    nodes: LatestNode[];
+  };
+};
+
+type MetricDefinitionNode = {
+  parent: any;
+  id: string;                    // Gatsby node id
+  label?: string | null;
+  type?: string | null;
+  metric_type?: string | null;
+  unit?: string | null;
+  // alerts?: [{"threshold": float
+  //   "direction": "above" | "below"
+  //   "severity": "info" | "warning" | "critical"
+  // }}] | null;
+};
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+`;
+
+const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
+  const metrics = data?.allMetricDefinition?.nodes ?? [];
+  const latest = data?.allMetricLatest?.nodes ?? [];
+
+  // Build a quick lookup table: filename -> latest value
+  const latestByName = new Map(
+    latest.map((l) => [l.parent.name, l.points?.[0]?.v ?? null])
+  );
+
+  return (
+    <StyleWrapper>
+      <Navbar />
+      <Grid>
+        {metrics.map((metric) => {
+          const fileName = metric.parent?.name;
+          const latestValue = fileName ? latestByName.get(fileName) : null;
+
+          return (
+            <Tile
+              key={metric.id}
+              to={`/metrics/${metric.id}`}
+              metric={metric}
+              latestValue={latestValue}
+            />
+          );
+        })}
+        <Tile/>
+      </Grid>
+    </StyleWrapper>
+  );
+};
+
+export default IndexPage;
+
+export const query = graphql`
+  query IndexPage {
+    allMetricDefinition {
+      nodes {
+        id
+        label
+        type
+        metric_type
+        unit
+
+        # Needed to join filename with latest data
+        parent {
+          ... on File {
+            name
+          }
+        }
+      }
+    }
+
+    allMetricLatest {
+      nodes {
+        metric_id
+        points {
+          t
+          v
+        }
+
+        parent {
+          ... on File {
+            name
+          }
+        }
+      }
+    }
+  }
+`;

@@ -1,8 +1,11 @@
 import styled, { css } from "styled-components";
+import { definitionStatus } from "../../types/alerts";
+import { Link } from "gatsby";
+
 
 export interface TileStyleProps {
     size?: "sm" | "md" | "lg";
-    variant?: "good" | "warning" | "danger";
+    status?: definitionStatus;
     clickable?: boolean;
 }
 
@@ -22,24 +25,48 @@ const sizeMap = {
     `,
 };
 
-/* variant helpers */
-const variantMap = {
-    good: css`
+/* status helpers */
+const statusMap = {
+    ok: css`
         background: var(--surface, #ffffff);
         color: var(--text, #111827);
-        border: 1px solid var(--good, #16a34a);
+        border: 2px solid var(--good, #16a34a);
+    `,
+    stale: css`
+        background: var(--surface, #ffffff);
+        color: var(--text, #111827);
+        border: 2px solid var(--good, #969696ff);
+    `,
+    info: css`
+        background: var(--surface, #ffffff);
+        color: var(--text, #111827);
+        border: 2px solid var(--good, #197cb9ff);
     `,
     warning: css`
         background: var(--surface, #ffffff);
         color: var(--text, #111827);
-        border: 1px solid var(--warning, #f59e0b);
+        border: 2px solid var(--warning, #f59e0b);
     `,
-    danger: css`
+    critical: css`
         background: var(--surface, #ffffff);
         color: var(--text, #111827);
-        border: 1px solid var(--danger, #ef4444);
+        border: 2px solid var(--danger, #ef4444);
     `,
 };
+
+
+export const TileLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &:visited {
+    text-decoration: none;
+    color: inherit;
+  }
+`;
 
 export const TileWrapper = styled.div<TileStyleProps>`
     box-sizing: border-box;
@@ -50,9 +77,9 @@ export const TileWrapper = styled.div<TileStyleProps>`
     flex-direction: column;
     gap: 8px;
     ${({ size = "md" }) => sizeMap[size]}
-    ${({ variant = "good" }) => variantMap[variant]}
+    ${({ status = "ok" }) => statusMap[status]}
 
-    ${({ clickable }) =>
+    ${({ clickable = true }) =>
         clickable &&
         css`
             cursor: pointer;

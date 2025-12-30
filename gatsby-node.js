@@ -1,6 +1,16 @@
 // gatsby-node.js
 const path = require('path');
 
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+
+  createTypes(`
+    type MetricDefinition implements Node {
+      mapping: JSON
+    }
+  `);
+};
+
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions;
 
@@ -10,7 +20,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     {
       allMetricDefinition {
         nodes {
-          id
+          metric_id
         }
       }
     }
@@ -25,7 +35,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   metrics.forEach((metric) => {
     createPage({
-      path: `/metrics/${metric.id}`, // e.g. /metrics/system.cpu.temp
+      path: `/${metric.metric_id}`, // e.g. /system.cpu.temp
       component: metricTemplate,
       context: {
         id: metric.id,

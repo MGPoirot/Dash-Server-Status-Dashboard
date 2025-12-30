@@ -1,49 +1,36 @@
-<p align="center">
-  <a href="https://www.gatsbyjs.com/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby Minimal TypeScript Starter
-</h1>
+# Dash Server Status Dashboard
+Dash is a lightweight Gatsby-based dashboard. It is a frontend to to monitor a variety of externally logged server states. 
 
-## 🚀 Quick start
+*Dashboard* The main component of Dash is the dashboard shown on its homepage. This homepage shows a tile layout of all "Definitions". Definitions 
 
-1.  **Create a Gatsby site.**
+Already implemented:
+- Tile based homepage showing key "Definition" information and "Latest" values.
+- When a tile is clicked, it leads to a dedicated page showing the "Definition", "Latest", and "Series" as raw data.
+- Status-based edge colors around tiles on the homepage.
+- Dark and light mode theme toggle.
+- Mobile and desktop menu bar.
 
-    Use the Gatsby CLI to create a new site, specifying the minimal TypeScript starter.
+To be implemented
+- homepage
+- In general, all definitions/tiles should be sorted based on status (Critical, Warning, Stale, Good).
+- A "Group" toggle should toggle clustering of tiles from No clustering, to clustering `type` to clustering by `type` and parent and back. When clustered, groups of tiles are shown surrounded by a html fieldset-like grouping.
+- The dedicated pages should be formatted as follows:
+-- In the head in large all fields should be formatted   
 
-    ```shell
-    # create a new Gatsby site using the minimal TypeScript starter
-    npm init gatsby -- -ts
-    ```
+✅ OK 
+ℹ️ Info
+⚠️ Warning
+🚨 Critical
+❓ Stale
 
-2.  **Start developing.**
+- On the homepage, tiles should be sorted by status, then by priority
 
-    Navigate into your new site’s directory and start it up.
+- the `src/pages/data-specifications.md page should be parsed into a page and located at /docs
 
-    ```shell
-    cd my-gatsby-site/
-    npm run develop
-    ```
 
-3.  **Open the code and start customizing!**
 
-    Your site is now running at http://localhost:8000!
 
-    Edit `src/pages/index.tsx` to see your site update in real-time!
-
-4.  **Learn more**
-
-    - [Documentation](https://www.gatsbyjs.com/docs/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Tutorials](https://www.gatsbyjs.com/docs/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Guides](https://www.gatsbyjs.com/docs/how-to/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [API Reference](https://www.gatsbyjs.com/docs/api-reference/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Plugin Library](https://www.gatsbyjs.com/plugins?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-
-## 🚀 Quick start (Netlify)
-
-Deploy this starter with one click on [Netlify](https://app.netlify.com/signup):
-
-[<img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-minimal-ts)
+# Changes for later versions:
+- Definition files should be editable from their dedicated page.
+- Definition files should be create-able from the frontend
+- Integrations files should receive a dedicated page and should be editable.

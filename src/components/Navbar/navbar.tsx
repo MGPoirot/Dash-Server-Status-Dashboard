@@ -17,7 +17,8 @@ import { lightTheme, darkTheme } from "../../styles/themes";
 
 const navItems = [
   { to: "/docs", label: "Docs" },
-  { to: "/integrations", label: "Integrations" },
+  // Integrations page will be added at a later stage
+  // { to: "/integrations", label: "Integrations" },
 ];
 
 type NavLinksProps = {

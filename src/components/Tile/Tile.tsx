@@ -1,55 +1,37 @@
 // src/components/Tile/Tile.tsx
 import * as React from "react";
-import styled from "styled-components";
-import {Meta, Title, TileWrapper} from "./Tile.style";
-import { Link } from "gatsby";
-
-type MetricDefinitionNode = {
-  id: string;
-  label?: string | null;
-  type?: string | null;
-  metric_type?: string | null;
-  unit?: string | null;
-};
-
-interface TileProps {
-  to: string;
-  metric?: {
-    id?: string;
-    label?: string;
-    type?: string;
-    metric_type?: string;
-    unit?: string;
-  };
-  latestValue?: number | null;
-}
-
+import {Meta, Title, TileWrapper, TileLink} from "./Tile.style";
+import { TileProps } from "../../types/tile";
+import { AlertLogic, resolveMetricValue } from "../../methods/statusLogic";
+import { StatusToEmoji, definitionStatus } from "../../types/alerts";
+import { kMaxLength } from "buffer";
 
 const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
   const isEmpty = !metric;
-
+  const { latestValueString, status, statusEmoji } =  resolveMetricValue(metric, latestValue);
   return (
-    <Link to={to}>
-      <TileWrapper>
+    <TileLink to={to}>
+      <TileWrapper
+        size="md"
+        status={status as definitionStatus}
+      >
         {isEmpty ? (
           // 👉 When NOTHING is passed → show plus emoji
           <div style={{ fontSize: "3rem", textAlign: "center" }}>➕</div>
         ) : (
           <>
-            <Title>{metric.label || metric.id}</Title>
+            <Title>{metric.label || metric.metric_id}</Title>
             <Meta>
               <div>
-                Latest: {latestValue !== null ? latestValue : "—"}{" "}
-                {metric.unit || ""}
+                {latestValueString}{" "}
+                {metric.unit || ""}{" "}
+                {statusEmoji}
               </div>
-              <div>Type: {metric.type || "—"}</div>
-              <div>Metric type: {metric.metric_type || "—"}</div>
-              <div>Unit: {metric.unit || "—"}</div>
             </Meta>
           </>
         )}
       </TileWrapper>
-    </Link>
+    </TileLink>
   );
 };
 

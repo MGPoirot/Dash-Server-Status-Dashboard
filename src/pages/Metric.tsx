@@ -4,36 +4,10 @@ import { graphql, PageProps, Link } from "gatsby";
 import styled from "styled-components";
 import StyleWrapper from "../styles/StyleWrapper";
 import Navbar from "../components/Navbar/navbar";
-
-type Point = {
-  t: string;
-  v: any;
-};
-
-type MetricFileParent = {
-  name: string; // e.g. "system.cpu.temp"
-};
-
-type MetricDefinitionNode = {
-  id: string; // Gatsby node ID
-  label?: string | null;
-  type?: string | null;
-  metric_type?: string | null;
-  unit?: string | null;
-  parent?: MetricFileParent | null;
-};
-
-type LatestNode = {
-  metric_id: string;
-  points: Point[];
-  parent: MetricFileParent;
-};
-
-type SeriesNode = {
-  metric_id: string;
-  points: Point[];
-  parent: MetricFileParent;
-};
+import {MetricDefinitionNode} from "../types/metric";
+import {LatestNode} from "../types/latest";
+import {SeriesNode} from "../types/series";
+import { resolveMetricValue } from "../methods/statusLogic";
 
 type MetricPageData = {
   metric: MetricDefinitionNode;
@@ -72,11 +46,15 @@ const MetricPage: React.FC<PageProps<MetricPageData, MetricPageContext>> = ({
     (s) => s.parent.name === fileName
   );
 
+  const latestValue = latestForMetric?.points[0]?.v ?? null;  
+
+  const { latestValueString, status, statusEmoji } =  resolveMetricValue(metric, latestValue);
+
   return (
     <StyleWrapper>
       <Navbar />
-      <h1>{metric.label || fileName || metric.id}</h1>
-
+      <h1> {statusEmoji} {metric.label || fileName || metric.metric_id} - {latestValueString}{metric.unit ? ` ${metric.unit}` : ""}</h1>
+      <p dangerouslySetInnerHTML={{__html: metric.description ? metric.description : "<i>No description provided.</i>"}}></p>
       <h2>Definition</h2>
       <Pre>{JSON.stringify(metric, null, 2)}</Pre>
 
@@ -101,21 +79,30 @@ export default MetricPage;
 
 // ✅ Valid GraphQL syntax, using $id from page context
 export const query = graphql`
-  query MetricPage($id: String!) {
-    metric: metricDefinition(id: { eq: $id }) {
-      id
+  query MetricPage($metric_id: String!) {
+    metric: metricDefinition(metric_id: { eq: $metric_id }) {
       label
+      description
+      metric_id
       type
       metric_type
       unit
+      tags
+      alerts {
+        threshold
+        direction
+        priority
+      }
+      mapping
+      expected_interval_sec
+
       parent {
         ... on File {
           name
         }
       }
     }
-
-    allMetricLatest {
+    allMetricLatest { 
       nodes {
         metric_id
         points {

@@ -6,13 +6,8 @@ import Tile from "../components/Tile/Tile";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import Navbar from "../components/Navbar/navbar";
 import StyleWrapper from "../styles/StyleWrapper";
-
-
-type LatestNode = {
-  metric_id: string;
-  points: { t: string; v: any }[];
-  parent: { name: string };
-};
+import { MetricDefinitionNode } from "../types/metric";
+import { LatestNode } from "../types/latest";
 
 
 type IndexPageData = {
@@ -24,18 +19,6 @@ type IndexPageData = {
   };
 };
 
-type MetricDefinitionNode = {
-  parent: any;
-  id: string;                    // Gatsby node id
-  label?: string | null;
-  type?: string | null;
-  metric_type?: string | null;
-  unit?: string | null;
-  // alerts?: [{"threshold": float
-  //   "direction": "above" | "below"
-  //   "severity": "info" | "warning" | "critical"
-  // }}] | null;
-};
 
 const Grid = styled.div`
   display: grid;
@@ -63,14 +46,14 @@ const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
 
           return (
             <Tile
-              key={metric.id}
-              to={`/metrics/${metric.id}`}
+              key={metric.metric_id}
+              to={`/${metric.metric_id}`}
               metric={metric}
               latestValue={latestValue}
             />
           );
         })}
-        <Tile/>
+        {/* <Tile to={""}/> */} {/* Empty tile for adding new metrics will be implemented later*/}
       </Grid>
     </StyleWrapper>
   );
@@ -82,12 +65,19 @@ export const query = graphql`
   query IndexPage {
     allMetricDefinition {
       nodes {
-        id
         label
+        metric_id
         type
         metric_type
         unit
-
+        tags
+        expected_interval_sec
+        alerts {
+          threshold
+          direction
+          priority
+        }
+        mapping
         # Needed to join filename with latest data
         parent {
           ... on File {

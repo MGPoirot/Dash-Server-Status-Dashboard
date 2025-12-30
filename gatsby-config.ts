@@ -1,5 +1,8 @@
 import type { GatsbyConfig } from "gatsby";
+import fs from "fs";
 import path from "path";
+
+const metricsDir = path.resolve(__dirname, "content/metrics");
 
 const config: GatsbyConfig = {
   siteMetadata: {
@@ -13,7 +16,7 @@ const config: GatsbyConfig = {
   plugins: [
     "gatsby-plugin-styled-components",
     "gatsby-plugin-mdx",
-
+    "gatsby-transformer-remark",
     // Existing pages source
     {
       resolve: "gatsby-source-filesystem",
@@ -52,6 +55,7 @@ const config: GatsbyConfig = {
         typeName: ({ node }) => {
           switch (node.sourceInstanceName) {
             case "definitions":
+            case "metrics":
               return "MetricDefinition";
             case "series":
               return "MetricSeries";

@@ -13,7 +13,7 @@ The design supports:
     
 *   Timestamps and metric history
     
-*   Tile-based UI with filtering (tags, parent, type, priority)
+*   Tile-based UI with filtering (tags, parent, type)
     
 *   Extensibility without schema changes
     
@@ -22,93 +22,91 @@ The design supports:
 ==============
 
 Each metric has three files linked by a shared `id`. This `id` consists of a `[type].[parent].[property]`. The files are stored in the following folders:  
-`/content/metrics/`  
+`/content/`  
 ├── `definitions/[type].[parent].[property].json`  
 ├── `series/[type].[parent].[property].json`  
 └── `latest/[type].[parent].[property].json`    
 
 
-📘 Metric Definition Format (metrics/definitions/\*.json)
+📘 1. Definition Format 
 ==================================================
 
-A **metric definition** describes what the metric _is_, how it should be displayed, and how alerts behave.
+A metric **definition** describes what the metric _is_, how it should be displayed, and how alerts behave. 
 
-| Field | Required | Description |
-|------|-------------|-------------|
-| **label** | Yes |  Human-readable title for UI tiles. |
-| **Description** | No | Human-readable description with HTML support. |
-| **id** | Yes |Globally unique metric identifier (also used in data file) that consists of [type].[parent].[property]. |
-| **type** | Yes |Category (e.g. storage, service, system, script). |
-| **parent** | Yes |Resource identifier (disk name, service name, etc.). |
-| **property** | Yes | Metric aspect on that resource (used, running, temp…). |
-| **metric_type** | Yes | Rendering / semantic type. |
-| **unit** |  No | GB, %, °C, s, etc. |
-| **mapping** |  No | Maps values to words, 1 "Up", 0.5 "Stopped", 0 "Down" |
-| **expected_interval_sec** | No | How often data should arrive before classed “stale”. |
-| **tags** |  No | Optional tags for grouping / filtering. |
-| **alerts** | No | Threshold-based alert rules. |
-| **display** | No |UI layout: chart type, tile size, and if the y-axis should be flipped in case `invert_good_bad`, etc. |
+| Field | Required | Type | Description |
+|-------|:--------:|------|-------------|
+| label       | Yes | string | Human-readable title for UI tiles. |
+| description | No | html | Human-readable description with HTML support. |
+| metric_id   | Yes | string | Globally unique metric identifier (also used in data file) that consists of [type].[parent].[property]. |
+| type        | Yes | string | Category (e.g. storage, service, system, script). |
+| parent      | Yes | string | Resource identifier (disk name, service name, etc.). |
+| property    | Yes | string | Metric aspect on that resource (used, running, temp…). |
+| unit         |  No | string | GB, %, °C, s, etc. |
+| mapping     |  No | See §1.1 | Maps values to words, 1 "Up", 0.5 "Stopped", 0 "Down" |
+| expected_interval_sec | No | number | How often data should arrive before classed “stale”. |
+| tags        |  No | Array of strings | Optional tags for grouping / filtering. |
+| alerts      | No | See §1.2 | Threshold-based alert rules. |
+| display     | No | See §1.3 | UI layout: chart type, tile size, and if the y-axis should be flipped in case `invert_good_bad`, etc. |
 
-Example:
+
+## 1.1 Value Mapping
+When storing values and configuring alerts it may be easier to store numeric values. To present human readable values the mapping field can be used. If the value is not present in the mapping, the raw value is returned.
+```json
+"mapping": {
+  "1":   "Up",
+  "0.5": "Stopped",
+  "0":   "Down"
+},
+```
+
+## 1.2 Alerts
+type AlertDirection = 
+type alertPriority = ;
+
+| Field | Required | Type | Description |
+|-------|:--------:|:----:|-------------|
+| threshold | Yes  | number | Value to be passed to trigger the alert |
+| direction | Yes  | "above" or "below" | Direction to be passed to trigger the alert |
+| priority  | Yes  | "info" or "warning" or "critical" | Priority of the alarm raised | 
+
+## 1.3 Value Display
+The display field is used to control visualization on the Metrics page. The display field contains three key items "tile_span", "visual", and "charts". Tile span controls the size of the tile on the home screen. Visual controls the type and properties of the visual on tile and on the top of the metrics page. Finally, the charts field controls which charts should be shown on the metrics page.
+
+### 1.3.1 Visual
+There are six types of visuals that can be specified in the "type" field. To improve visualization each visual can be provided with additional arguments.
+
+| Visual | Variable type | Examples | Arguments |
+|-------------|-------------|----------|----------------|
+| gauge       | Bound continous     | Storage use,  | min, max, invert_y, show_alerts |
+| number      | Unbound continuous  | Temperature | min, max, invert_y, show_alerts |
+| counter     | Increasing integers | Tracks downloaded | time_period |
+| state       | Categoricals         | Container status | states, colors |
+| version     | Version number split but periods | Plex updates | format |
+| text        | Free text           | Command output |  |
 
 ```json
-{
-  "label": "Disk 1 Used Space",
-  "description": "Tracks the amount of used storage space on Hard Disk 1 in terabytes (TB). This metric helps monitor disk usage and capacity planning.",
-  "id": "storage.hard-disk-1.used",
-  "type": "storage",
-  "parent": "hard-disk-1",
-  "property": "used",
-  "metric_type": "gauge",
-  "unit": "TB",
-  "expected_interval_sec": 3600,
-  "tags": ["nas", "local"],
-  "alerts": [
-    { "threshold": 9.5,  "direction": "above",  "priority": "info" },
-    { "threshold": 10.5, "direction": "above",  "priority": "warning" },
-    { "threshold": 11.5, "direction": "above", "priority": "critical"}
-  ],
-  "display": {
-    "tile_span": 1,
-    "chart_type": "line",
-    "invert_good_bad": false  
-  }
+"display": {
+  "tile_span": 1,
+  "visual": {
+    "type": "gauge", 
+    "min": 0,
+    "max": "max",
+    "invert_y": false
+    "show_alerts": true
+  },
+  "charts": ["line"]
 }
 ```
 
-## Mapping
-When storing values and configuring alerts it may be easier to store numeric values. To present human readable values the mapping field can be used. If the value is not present in the mapping, the raw value is returned.
-```json
-  "mapping": {
-    "1": "Up",
-    "0.5": "Stopped",
-    "0": "Down"
-  },
-```
-
-## Display
-The display field is used to control visualization on the Metrics page.
-`invert_good_bad` can be used to flip the y-axis of graphs on the Metrics page.
-```json
- "display": {
-    "tile_span": 1,
-    "chart_type": "line",
-    "invert_good_bad": false  
-  }
-```
-
-Definition Fields
------------------
-
-📊 Metric Series Format (metrics/series/\*.json)
+📊 Series Format 
 ============================================
 
 A **metric series file** contains the time series for a single metric.
 
 | Field | Description |
 |------|-------------|
-| **metric_id** | Globally unique metric identifier (also used in data file) that consists of [type].[parent].[property]. |
-| **points** | An array of point objects. |
+| metric_id | Globally unique metric identifier (also used in data file) that consists of [type].[parent].[property]. |
+| points | An array of point objects. |
 
 Points object consist of:
 * **t** Timestamp in ISO-8601 format.
@@ -132,7 +130,7 @@ Example with metadata:
 
 meta is intentionally flexible so scripts can add useful details without modifying the schema.
 
-🧩 Examples of Common Metrics
+🧩 More Examples of Common Metrics
 =============================
 
 ### Storage Percentage
@@ -208,9 +206,8 @@ meta is intentionally flexible so scripts can add useful details without modifyi
     "property": "success",
     "metric_type": "boolean",
     "alerts": [
-        { "threshold": 1,
-        "priority": 4 }
-        ]  
+        { "threshold": 1, "direction": "below", "priority": "critical" }
+    ],  
     "display": {
         "tile_span": 1,
         "chart_type": "line",
@@ -230,6 +227,7 @@ meta is intentionally flexible so scripts can add useful details without modifyi
     
 4.  Gatsby rebuilds and the dashboard updates accordingly.
     
+In the future, I am planning on an LLM-based metric generation system.
 
 ✔ Design Goals
 ==============

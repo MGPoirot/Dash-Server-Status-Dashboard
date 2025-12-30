@@ -20,7 +20,7 @@ type MetricPageData = {
 };
 
 type MetricPageContext = {
-  id: string; // passed from gatsby-node (metricDefinition.id)
+  metric_id: string; // passed from gatsby-node (MetricDefinition.metric_id)
 };
 
 const Pre = styled.pre`
@@ -77,7 +77,7 @@ const MetricPage: React.FC<PageProps<MetricPageData, MetricPageContext>> = ({
 
 export default MetricPage;
 
-// ✅ Valid GraphQL syntax, using $id from page context
+// Page query variable comes from createPage context in gatsby-node.js
 export const query = graphql`
   query MetricPage($metric_id: String!) {
     metric: metricDefinition(metric_id: { eq: $metric_id }) {

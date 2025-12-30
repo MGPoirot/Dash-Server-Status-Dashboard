@@ -38,7 +38,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       path: `/${metric.metric_id}`, // e.g. /system.cpu.temp
       component: metricTemplate,
       context: {
-        id: metric.id,
+        // Matches the page query variable name in src/pages/Metric.tsx
+        metric_id: metric.metric_id,
       },
     });
   });

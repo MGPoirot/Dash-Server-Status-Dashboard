@@ -32,7 +32,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions;
 
-  const metricTemplate = path.resolve("./src/containers/Metric/Metric.tsx");
+  const metricTemplate = path.resolve("./src/templates/metric-page.tsx");
   const markdownTemplate = path.resolve("./src/templates/markdown-page.tsx");
 
   const result = await graphql(`

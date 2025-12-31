@@ -1,7 +1,7 @@
 Prompt
 =====================================================
 
-The prompt below can be used to generate a new metric definition. It is basically the [docs](/docs) page for LLMs.
+The prompt below can be used to generate a new metric definition. It is basically the [Data Format](/data-format) page for LLMs.
 
 ```text
 You are generating EXACTLY ONE metric DEFINITION file for a server monitoring dashboard.

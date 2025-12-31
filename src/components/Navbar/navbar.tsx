@@ -16,6 +16,7 @@ import { useTheme } from "../../styles/StyleWrapper";
 import { lightTheme, darkTheme } from "../../styles/themes";
 
 const navItems = [
+  { to: "/about", label: "About" },
   { to: "/api", label: "API" },
   { to: "/data-format", label: "Data Format" },
   // Integrations page will be added at a later stage

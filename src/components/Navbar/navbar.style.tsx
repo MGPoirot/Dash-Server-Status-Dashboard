@@ -19,7 +19,7 @@ export const NavbarContainer = styled.header<Themed>`
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     padding-inline: var(--space-lg);
   }
 `;
@@ -55,7 +55,7 @@ export const Nav = styled.ul<Themed>`
   /* so it sits between logo and right section */
   justify-content: flex-start;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     display: flex;
     margin-left: var(--space-md);
   }
@@ -132,7 +132,7 @@ export const CTAButton = styled.button<Themed>`
     box-shadow: var(--shadow-high);
   }
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     display: inline-flex;
   }
 `;
@@ -213,7 +213,7 @@ export const Hamburger = styled.button<Themed>`
     outline: none;
   }
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     display: none;
   }
 `;
@@ -238,7 +238,7 @@ export const MobileMenu = styled.ul<Themed>`
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow-medium);
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     display: none;
   }
 `;

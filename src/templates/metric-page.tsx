@@ -8,6 +8,7 @@ import {MetricDefinitionNode} from "../types/metric";
 import {LatestNode} from "../types/latest";
 import {SeriesNode} from "../types/series";
 import { resolveMetricValue } from "../methods/statusLogic";
+import TextContainer from "../styles/PageWrapper";
 
 type MetricPageData = {
   metric: MetricDefinitionNode;
@@ -53,24 +54,26 @@ const MetricPage: React.FC<PageProps<MetricPageData, MetricPageContext>> = ({
   return (
     <StyleWrapper>
       <Navbar />
-      <h1> {statusEmoji} {metric.label || fileName || metric.metric_id} - {latestValueString}{metric.unit ? ` ${metric.unit}` : ""}</h1>
-      <p dangerouslySetInnerHTML={{__html: metric.description ? metric.description : "<i>No description provided.</i>"}}></p>
-      <h2>Definition</h2>
-      <Pre>{JSON.stringify(metric, null, 2)}</Pre>
+      <TextContainer>
+        <h1> {statusEmoji} {metric.label || fileName || metric.metric_id} - {latestValueString}{metric.unit ? ` ${metric.unit}` : ""}</h1>
+        <p dangerouslySetInnerHTML={{__html: metric.description ? metric.description : "<i>No description provided.</i>"}}></p>
+        <h2>Definition</h2>
+        <Pre>{JSON.stringify(metric, null, 2)}</Pre>
 
-      <h2>Latest</h2>
-      {latestForMetric ? (
-        <Pre>{JSON.stringify(latestForMetric, null, 2)}</Pre>
-      ) : (
-        <p>No latest data found for this metric.</p>
-      )}
+        <h2>Latest</h2>
+        {latestForMetric ? (
+          <Pre>{JSON.stringify(latestForMetric, null, 2)}</Pre>
+        ) : (
+          <p>No latest data found for this metric.</p>
+        )}
 
-      <h2>Series</h2>
-      {seriesForMetric ? (
-        <Pre>{JSON.stringify(seriesForMetric, null, 2)}</Pre>
-      ) : (
-        <p>No series data found for this metric.</p>
-      )}
+        <h2>Series</h2>
+        {seriesForMetric ? (
+          <Pre>{JSON.stringify(seriesForMetric, null, 2)}</Pre>
+        ) : (
+          <p>No series data found for this metric.</p>
+        )}
+      </TextContainer>
     </StyleWrapper>
   );
 };

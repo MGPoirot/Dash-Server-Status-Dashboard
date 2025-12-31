@@ -1,13 +1,13 @@
-// src/pages/metric.tsx
+// src/containers/Metric/metric.tsx
 import * as React from "react";
 import { graphql, PageProps, Link } from "gatsby";
 import styled from "styled-components";
-import StyleWrapper from "../styles/StyleWrapper";
-import Navbar from "../components/Navbar/navbar";
-import {MetricDefinitionNode} from "../types/metric";
-import {LatestNode} from "../types/latest";
-import {SeriesNode} from "../types/series";
-import { resolveMetricValue } from "../methods/statusLogic";
+import StyleWrapper from "../../styles/StyleWrapper";
+import Navbar from "../../components/Navbar/navbar";
+import {MetricDefinitionNode} from "../../types/metric";
+import {LatestNode} from "../../types/latest";
+import {SeriesNode} from "../../types/series";
+import { resolveMetricValue } from "../../methods/statusLogic";
 
 type MetricPageData = {
   metric: MetricDefinitionNode;

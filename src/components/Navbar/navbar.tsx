@@ -16,9 +16,11 @@ import { useTheme } from "../../styles/StyleWrapper";
 import { lightTheme, darkTheme } from "../../styles/themes";
 
 const navItems = [
-  { to: "/docs", label: "Docs" },
+  { to: "/api", label: "API" },
+  { to: "/data-format", label: "Data Format" },
   // Integrations page will be added at a later stage
-  // { to: "/integrations", label: "Integrations" },
+  { to: "/prompt", label: "Prompt" },
+  { to: "/integrations", label: "Integrations" }
 ];
 
 type NavLinksProps = {

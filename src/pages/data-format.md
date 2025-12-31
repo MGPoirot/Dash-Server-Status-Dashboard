@@ -1,7 +1,7 @@
-Server Monitoring Metrics — Data Format Specification
+Data Format Specification
 =====================================================
 
-This document describes the JSON data format used by the monitoring dashboard. All monitoring scripts generate metric data in this format, which Gatsby then ingests to build the UI.
+This document describes the JSON data format used by this monitoring dashboard. All monitoring scripts generate metric data in this format, which Gatsby then ingests to build the UI.
 
 The design supports:
 
@@ -33,8 +33,8 @@ Each metric has three files linked by a shared `id`. This `id` consists of a `[t
 
 A metric **definition** describes what the metric _is_, how it should be displayed, and how alerts behave. 
 
-| Field | Required | Type | Description |
-|-------|:--------:|------|-------------|
+|    Field    | Required | Type | Description |
+|-------------|:--------:|------|-------------|
 | label       | Yes | string | Human-readable title for UI tiles. |
 | description | No | html | Human-readable description with HTML support. |
 | metric_id   | Yes | string | Globally unique metric identifier (also used in data file) that consists of [type].[parent].[property]. |
@@ -60,29 +60,41 @@ When storing values and configuring alerts it may be easier to store numeric val
 ```
 
 ## 1.2 Alerts
-type AlertDirection = 
-type alertPriority = ;
+Alerts is a list of alert objects. Each alert object is defined by three key-value pairs:
 
 | Field | Required | Type | Description |
-|-------|:--------:|:----:|-------------|
+|-------|---------|-----|-------------|
 | threshold | Yes  | number | Value to be passed to trigger the alert |
 | direction | Yes  | "above" or "below" | Direction to be passed to trigger the alert |
 | priority  | Yes  | "info" or "warning" or "critical" | Priority of the alarm raised | 
 
-## 1.3 Value Display
-The display field is used to control visualization on the Metrics page. The display field contains three key items "tile_span", "visual", and "charts". Tile span controls the size of the tile on the home screen. Visual controls the type and properties of the visual on tile and on the top of the metrics page. Finally, the charts field controls which charts should be shown on the metrics page.
+Example:
 
-### 1.3.1 Visual
+```json 
+"alerts": [
+  { "threshold": 70, "direction": "above", "priority": "info" },
+  { "threshold": 80, "direction": "above", "priority": "warning" },
+  { "threshold": 90, "direction": "above", "priority": "critical" }
+],
+``` 
+## 1.3 Value Display
+The display field is used to control visualization on the Metrics page. The display field contains three key items, `tile_span`, `visual`, and `charts`: 
+*   **Tile span** controls the size of the tile on the home screen. 
+*   **Visual** controls the type and properties of the visual on tile and on the top of the metrics page. 
+*   **Charts** contains an array of chart types which are shown on the metrics page.
+
 There are six types of visuals that can be specified in the "type" field. To improve visualization each visual can be provided with additional arguments.
 
-| Visual | Variable type | Examples | Arguments |
-|-------------|-------------|----------|----------------|
-| gauge       | Bound continous     | Storage use,  | min, max, invert_y, show_alerts |
-| number      | Unbound continuous  | Temperature | min, max, invert_y, show_alerts |
-| counter     | Increasing integers | Tracks downloaded | time_period |
-| state       | Categoricals         | Container status | states, colors |
-| version     | Version number split but periods | Plex updates | format |
-| text        | Free text           | Command output |  |
+|    Visual   |    Variable type    | Examples | Arguments |
+|-------------|---------------------|----------|--------------|
+| `gauge`       | Bound continous     | Storage use       | `min`, `max`, `invert_y`, `show_alerts` |
+| `number`      | Unbound continuous  | Temperature       | `min`, `max`, `invert_y`, `show_alerts` |
+| `counter`     | Increasing integers | Tracks downloaded | `time_period`                     |
+| `state`       | Categoricals        | Container status  | `states`, `colors`                  |
+| `version`     | Version number      | Current Plex version | `format`  |
+| `text`        | Free text           | Command output    |                                 |
+
+Charts has not been implemented yet, but I am considering implementing the following chart types: `line`, `area`, `bar` and `pie`. I'd also like to make them stacked.
 
 ```json
 "display": {
@@ -105,13 +117,17 @@ A **metric series file** contains the time series for a single metric.
 
 | Field | Description |
 |------|-------------|
-| metric_id | Globally unique metric identifier (also used in data file) that consists of [type].[parent].[property]. |
-| points | An array of point objects. |
+| `metric_id` | Globally unique metric identifier (also used in data file) that consists of [type].[parent].[property]. |
+| `points` | An array of point objects. |
 
-Points object consist of:
-* **t** Timestamp in ISO-8601 format.
-* **v** Value (float, int, boolean, string depending on metric\_type).
-* **meta** _(optional)_ Extra context such as error messages, durations, log paths, etc.
+Point objects are defined as follows:
+
+| Field | Required | Type | Description |
+|------|-----------|------| -------------|
+| `t` |     Yes    | string | Timestamp in ISO-8601 format. |
+| `v` |     Yes    | boolean, string, number | Key value | 
+| `a` |     No     | Array of `v` | Array of additional values |
+| `meta` |  No     | Map | Flexible context such as error messages, durations, log paths, etc.
 
 Example with metadata:
 

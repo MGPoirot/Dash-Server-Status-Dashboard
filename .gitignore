@@ -7,6 +7,9 @@ public/
 .env
 .env.*
 
+# Private configurations
+content/integrations/*.json
+
 # IDE dirs
 .vscode/
 .idea

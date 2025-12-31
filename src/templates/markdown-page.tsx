@@ -1,5 +1,5 @@
 import * as React from "react";
-import { graphql, PageProps } from "gatsby";
+import { PageProps } from "gatsby";
 import styled from "styled-components";
 
 import Navbar from "../components/Navbar/navbar";
@@ -27,14 +27,14 @@ const Container = styled.main`
   }
 `;
 
-type Data = {
-  markdownRemark: {
-    html: string;
-  } | null;
+type Context = {
+  html?: string;
+  title?: string | null;
+  slug?: string;
 };
 
-const DocsPage = ({ data }: PageProps<Data>) => {
-  const html = data.markdownRemark?.html ?? "<p>Docs not found.</p>";
+export default function MarkdownPage({ pageContext }: PageProps<unknown, Context>) {
+  const html = pageContext.html ?? "<p>Docs not found.</p>";
 
   return (
     <StyleWrapper>
@@ -42,14 +42,4 @@ const DocsPage = ({ data }: PageProps<Data>) => {
       <Container dangerouslySetInnerHTML={{ __html: html }} />
     </StyleWrapper>
   );
-};
-
-export default DocsPage;
-
-export const query = graphql`
-  query DocsFromMarkdown {
-    markdownRemark(fileAbsolutePath: { regex: "/data-specifications\\.md$/" }) {
-      html
-    }
-  }
-`;
+}

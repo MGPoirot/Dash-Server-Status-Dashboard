@@ -17,7 +17,6 @@ const config: GatsbyConfig = {
     "gatsby-plugin-styled-components",
     "gatsby-plugin-mdx",
     "gatsby-transformer-remark",
-    // Existing pages source
     {
       resolve: "gatsby-source-filesystem",
       options: {
@@ -26,7 +25,6 @@ const config: GatsbyConfig = {
       },
       __key: "pages",
     },
-    // --- NEW ---
     {
       resolve: "gatsby-source-filesystem",
       options: {

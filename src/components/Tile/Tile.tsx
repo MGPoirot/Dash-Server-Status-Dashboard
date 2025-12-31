@@ -2,9 +2,8 @@
 import * as React from "react";
 import {Meta, Title, TileWrapper, TileLink} from "./Tile.style";
 import { TileProps } from "../../types/tile";
-import { AlertLogic, resolveMetricValue } from "../../methods/statusLogic";
-import { StatusToEmoji, definitionStatus } from "../../types/alerts";
-import { kMaxLength } from "buffer";
+import { resolveMetricValue } from "../../methods/statusLogic";
+import { definitionStatus } from "../../types/alerts";
 
 const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
   const isEmpty = !metric;

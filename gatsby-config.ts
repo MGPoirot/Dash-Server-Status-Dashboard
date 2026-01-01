@@ -16,7 +16,19 @@ const config: GatsbyConfig = {
   plugins: [
     "gatsby-plugin-styled-components",
     "gatsby-plugin-mdx",
-    "gatsby-transformer-remark",
+    {
+    resolve: `gatsby-transformer-remark`,
+    options: {
+      plugins: [
+        {
+          resolve: `gatsby-remark-highlight-code`,
+          options: {
+            terminal: "none",
+          },
+        },
+      ],
+    },
+    },
     {
       resolve: "gatsby-source-filesystem",
       options: {

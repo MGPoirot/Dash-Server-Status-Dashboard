@@ -7,6 +7,7 @@ import { definitionStatus } from "../../types/alerts";
 
 const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
   const isEmpty = !metric;
+  const isCollapsed = React.useState(false);
   const { latestValueString, status, statusEmoji } =  resolveMetricValue(metric, latestValue);
   return (
     <TileLink to={to}>

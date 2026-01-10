@@ -15,10 +15,11 @@ __pycache__/
 # the content folder contains folder that contain customized and private logs
 content/*/*.json
 content/*/*.py
-prompts/server.txt
-prompts/server.md
-prompts/scheduler.txt
-prompts/scheduler.md
+content/prompts/server.txt
+content/prompts/server.md
+content/prompts/scheduler.txt
+content/prompts/scheduler.md
+content/prompts/scheduler.txt
 
 
 # Temporary staging files

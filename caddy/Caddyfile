@@ -1,0 +1,21 @@
+:8082 {
+  handle /configs/* {
+    reverse_proxy dash-json:7000
+  }
+  handle /latest/* {
+    reverse_proxy dash-json:7000
+  }
+  handle /series/* {
+    reverse_proxy dash-json:7000
+  }
+  handle /scripts/* {
+    reverse_proxy dash-json:7000
+  }
+  handle /prompts/* {
+    reverse_proxy dash-json:7000
+  }
+
+  handle {
+    reverse_proxy dash-prod:9000
+  }
+}

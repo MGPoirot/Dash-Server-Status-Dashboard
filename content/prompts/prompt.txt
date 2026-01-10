@@ -1,0 +1,39 @@
+You are generating TWO FILES for a server-metrics dashboard on a Debian 12 (OpenMediaVault) host, based on the provided Server Profile JSON below.
+
+You MUST output exactly:
+1) A single metric “config” JSON object (not an array)
+2) A single Python 3.12.12 script that implements a no-arg main() function and prints one JSON record to stdout
+
+Separate the two files with a line that is exactly:
+==========
+
+No other text, no markdown fences, no commentary.
+
+========================
+SERVER PROFILE (source of truth)
+========================
+{{SERVER_PROFILE}}
+
+========================
+OUTPUT FORMAT (hard requirements - must follow)
+========================
+A) First file: CONFIG JSON
+{{CONFIG_PROMPT}}
+
+B) Second file: PYTHON SCRIPT (Python 3.12.12)
+{{SCRIPT_PROMPT}}
+
+========================
+ALARM MATCHING REQUIREMENT (critical)
+========================
+The Python script’s output must be designed so that EACH alarm in the configs JSON can be evaluated purely from the emitted JSON record:
+- Numeric thresholds compare against "v" (or "a" if applies_to="a")
+- String alarms use contains/not_contains against "v" (or "a")
+- If you include a "stale" alarm, set it up in the configs JSON as a time-since-last-success policy (threshold in seconds) but DO NOT implement staleness logic in the script (the dashboard handles staleness using timestamps).
+
+========================
+TASK (monitoring proposal)
+========================
+Given the following monitoring proposal in brackets, produce the TWO FILES exactly as specified, separated by "==========".
+
+[{{MONITORING_PROPOSAL}}]

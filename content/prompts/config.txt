@@ -1,0 +1,175 @@
+- Output MUST be a single JSON object.
+- Output MUST start with "{" and end with "}".
+- Output MUST be valid JSON (double quotes only, no trailing commas).
+- Output MUST be parseable by json.loads().
+- DO NOT include markdown, comments, explanations, code fences, or any text outside the JSON object.
+
+TOP-LEVEL JSON STRUCTURE:
+
+The root object MAY ONLY contain the following keys.
+No other keys are allowed.
+
+REQUIRED keys (MUST be present):
+- "label"
+- "metric_id"
+- "type"
+- "component"
+- "property"
+- "schedule"
+- "display"
+
+OPTIONAL keys (MAY be present):
+- "description"
+- "unit"
+- "tags"
+- "meaningMap"
+- "alerts"
+
+FIELD DEFINITIONS AND CONSTRAINTS:
+
+1. "label"
+- REQUIRED
+- Type: string
+- Short, human-readable title for the UI.
+
+2. "description"
+- OPTIONAL
+- Type: string
+- Human-readable description. HTML is allowed but not required.
+
+3. "metric_id"
+- REQUIRED
+- Type: string
+- Format: "[type]_[component]_[property]"
+- Must be lowercase.
+- Must match the values used in "type", "component", and "property".
+
+4. "type"
+- REQUIRED
+- Type: string
+- Category of the metric.
+- Use a short lowercase noun (e.g. "system", "storage", "services", "script").
+
+5. "component"
+- REQUIRED
+- Type: string
+- Resource identifier (service name, disk name, component, etc.).
+- All lowercase, hyphens are allowed
+- DO NOT use spaces and underscores
+
+6. "property"
+- REQUIRED
+- Type: string
+- The measured aspect of the component (e.g. "up", "temp", "used-pct", "days").
+- All lowercase, hyphens are allowed
+- DO NOT use spaces and underscores
+
+7. "schedule"
+- REQUIRED
+- Type: string
+- How frequent the script this script should be run formatted as cron schedule expression. 
+- MUST be exactly one of:
+  - "weekly"
+  - "bi-daily"
+  - "daily"
+  - "twice-daily"
+  - "hourly"
+  - "half-hourly"
+  - "quarter-hourly"
+  - "five-minutely"
+  - "minutely"
+
+8. "display"
+- REQUIRED
+- Type: object
+- MAY ONLY contain the following keys:
+  - "visual"
+  - "tile_span"
+  - "charts"
+
+8a. "display.visual"
+- REQUIRED
+- Type: object
+- MUST contain:
+  - "type": string (required)
+- "type" MUST be one of:
+  - "gauge"
+  - "number"
+  - "counter"
+  - "state"
+  - "version"
+  - "text"
+- These are the parameters for each of the "display.visual.type" options:
+  - when "display.visual.type" == "gauge":
+    - "display.visual.min" REQUIRED as number
+    - "display.visual.max" REQUIRED as number
+    - "display.visual.hideAlerts" OPTIONAL as boolean
+    - "display.visual.invert_y" OPTIONAL as boolean
+  - when "display.visual.type" == "number":
+    - "display.visual.min" OPTIONAL as number
+    - "display.visual.max" OPTIONAL as number
+    - "display.visual.hideAlerts" OPTIONAL as boolean
+    - "display.visual.invert_y" OPTIONAL as boolean
+    - "display.visual.nLatestPoints" OPTIONAL as number, the number of points that are relevant to show in the chart visual.
+  - when "display.visual.type" == "counter": 
+    - "display.visual.hideAlerts" OPTIONAL as boolean
+    - "display.visual.nLatestPoints" OPTIONAL as number, the number of points back time over which the cumulative sum is calculated.
+  - when "display.visual.type" == "version": 
+    - "display.visual.nLatestPoints" OPTIONAL as number, the number of latest versions to show in the visual
+
+8b. "display.tile_span"
+- OPTIONAL
+- Type: number
+- Typical value: 1
+
+8c. "display.charts"
+- OPTIONAL
+- Type: array of strings
+- Each entry MUST be one of:
+  - "line"
+  - "area"
+  - "bar"
+  - "pie"
+
+9. "unit"
+- OPTIONAL
+- Type: string
+- Examples: "%", "°C", "GB", "s", "days", "minutes"
+- Only include when meaningful.
+
+10. "tags"
+- OPTIONAL
+- Type: array of strings
+- Used for filtering/grouping.
+- Example: ["service", "docker", "immich"]
+
+11. "meaningMap"
+- OPTIONAL
+- Type: object
+- Keys MUST be strings representing numeric values.
+- Values MUST be strings.
+- Key value pairs should be ordered from Best ("0") to worst (Highest value).
+- Example:
+  {
+    "0": "Up",
+    "1": "Stopped",
+    "2": "Down"
+  }
+
+12. "alerts"
+- OPTIONAL
+- Type: array of objects
+- Each object MUST contain ALL of the following keys:
+  - "threshold": number
+  - "direction": string, MUST be either "above" or "below"
+  - "priority": string, MUST be one of "info", "warning", "critical"
+
+ADDITIONAL RULES:
+- Do NOT include fields with null values.
+- Do NOT invent new field names.
+- Prefer minimal but complete definitions.
+- If the metric represents a service or boolean-like state, encode as string, prefer:
+  - include "meaningMap"
+  - set display.visual to "state"
+  - include display.visual.colorMap
+  - include at least one "critical" alert when the state indicates failure.

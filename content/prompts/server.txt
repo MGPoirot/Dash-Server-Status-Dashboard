@@ -1,0 +1,395 @@
+{
+  "schema": {
+    "name": "canonical_server_profile",
+    "version": "1.0.0",
+    "generated_at_local": "2026-01-03T11:50:00+01:00",
+    "timezone": "Europe/Amsterdam"
+  },
+  "identity": {
+    "hostname": "openmediavault",
+    "machine_id": "31f908231e6b44ea8aada05f41b9ee52",
+    "boot_id": "fd885c5219d74fd9b8b3e49b686b385a",
+    "vendor": "Dell Inc.",
+    "model": "OptiPlex 3070",
+    "firmware_version": "1.28.0"
+  },
+  "os": {
+    "distribution": "Debian GNU/Linux 12 (bookworm)",
+    "debian_version_file": "12.12",
+    "kernel": {
+      "release": "6.12.57+deb12-amd64",
+      "build": "Debian 6.12.57-1~bpo12+1",
+      "build_date": "2025-11-17"
+    },
+    "openmediavault": {
+      "enabled": true,
+      "codename": "Sandworm"
+    },
+    "reboot_required": {
+      "path": "/var/run/reboot-required"
+    }
+  },
+  "hardware": {
+    "cpu": {
+      "vendor": "GenuineIntel",
+      "model_name": "Intel(R) Core(TM) i5-9500T CPU @ 2.20GHz",
+      "sockets": 1,
+      "cores": 6,
+      "threads_per_core": 1,
+      "min_mhz": 800.0,
+      "max_mhz": 3700.0,
+      "virtualization": "VT-x"
+    },
+    "memory": {
+      "total_gib": 7.6
+    },
+    "thermals": {
+      "sensors_source": "lm-sensors",
+      "sensors": [
+        {
+          "id": "x86_pkg_temp",
+          "chip": "coretemp-isa-0000",
+          "label": "Package id 0",
+          "unit": "C",
+          "high": 94.0,
+          "crit": 100.0
+        },
+        {
+          "id": "acpitz_temp1",
+          "chip": "acpitz-acpi-0",
+          "label": "temp1",
+          "unit": "C"
+        },
+        {
+          "id": "pch_cannonlake_temp1",
+          "chip": "pch_cannonlake-virtual-0",
+          "label": "temp1",
+          "unit": "C"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "system_disk": {
+      "device": "/dev/sda",
+      "nicknames":  ["SSD", "OS Drive"],
+      "purpose": "Storing the OS and server functions",
+      "type": "ssd_sata",
+      "model": "KINGSTON SKC600256G",
+      "serial": "50026B778357FE8C",
+      "purchase date": "2024-11-07",
+      "capacity_gb": 256,
+      "smart": {
+        "supported": true,
+        "overall_health": "PASSED"
+      },
+      "partitions": [
+        {
+          "device": "/dev/sda1",
+          "role": "efi",
+          "fstype": "vfat",
+          "uuid": "671B-2FFA",
+          "mountpoint": "/boot/efi"
+        },
+        {
+          "device": "/dev/sda2",
+          "role": "root",
+          "fstype": "ext4",
+          "uuid": "e36c4fff-0331-4c4b-b333-b4a7686d50f6",
+          "mountpoint": "/",
+          "size": "233G"
+        },
+        {
+          "device": "/dev/sda3",
+          "role": "swap",
+          "fstype": "swap",
+          "uuid": "2ecc3312-6982-48e2-9d4e-a1fd29ae8fc0"
+        }
+      ]
+    },
+    "data_disks": [
+      {
+        "device": "/dev/sdb",
+        "nicknames": ["Lil Nas X", "X", "8TB HDD"],
+        "purpose": "Primary file storage",
+        "connection": "usb",
+        "model": "Seagate Expansion STKP8000400",
+        "serial": "00000000NT17AT5X",
+        "purchase date": "2024-11-13",
+        "capacity_tb": 7.3,
+        "partitions": [
+          {
+            "device": "/dev/sdb1",
+            "fstype": "ext4",
+            "uuid": "38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e",
+            "mountpoint": "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e",
+            "mount_options": "rw,relatime,quota,usrquota,grpquota",
+            "size": "7.3T",
+            "key_folders": [
+              {
+                "nicknames": ["Lil Nas Z", "Z"],
+                "purpose": ["Staging area for compressed files before uploading to AWS Glacier for off-site backup."],
+                "path": "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasZ"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "device": "/dev/sdc",
+        "nicknames": ["Lil Nas Y", "Y", "2TB HDD"],
+        "purpose": "First on-site backup location",
+        "connection": "usb",
+        "model": "Seagate Expansion STKM2000400",
+        "serial": "00000000NAC5QSKY",
+        "purchase date": "2021-12-21",
+        "capacity_tb": 1.8,
+        "partitions": [
+          {
+            "device": "/dev/sdc1",
+            "fstype": "ext4",
+            "uuid": "1806e0be-96d7-481c-afaa-90a97aca9f92",
+            "mountpoint": "/srv/dev-disk-by-uuid-1806e0be-96d7-481c-afaa-90a97aca9f92",
+            "mount_options": "rw,relatime,quota,usrquota,grpquota",
+            "size": "1.8T"
+          }
+        ]
+      }
+    ],
+    "docker_storage": {
+      "docker_root_dir": "/var/lib/docker",
+      "storage_driver": "overlay2",
+      "backing_fs": "extfs",
+      "backing_mount": "/"
+    }
+  },
+  "systemd": {
+    "failed_units": [
+      {
+        "unit": "quotaon.service",
+        "description": "Enable File System Quotas",
+        "state": "failed"
+      }
+    ]
+  },
+  "docker": {
+    "engine": {
+      "edition": "Docker Engine - Community",
+      "version": "29.1.3",
+      "api_version": "1.52",
+      "root_dir": "/var/lib/docker",
+      "logging_driver": "json-file",
+      "cgroup_driver": "systemd",
+      "cgroup_version": 2,
+      "live_restore_enabled": false
+    },
+    "inventory": {
+      "containers_total": 20
+    },
+    "containers": [
+      {
+        "name": "immich_server",
+        "image": "ghcr.io/immich-app/immich-server:release",
+        "restart_policy": "always",
+        "ports": ["2283/tcp"],
+        "volumes": [
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/immich-app/library:/usr/src/app/upload",
+          "/etc/localtime:/etc/localtime:ro",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/photo-albums:/usr/src/app/photo-albums",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/photos:/usr/src/app/photos",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/arnes-fotos:/usr/src/app/arnes-fotos",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/images/Downloaded/WhatsApp Images:/usr/src/app/whatsapp-images",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/images/Downloaded/WhatsApp Video:/usr/src/app/whatsapp-video",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/Downloaded/WhatsApp Images/Private/:/usr/src/app/whatsapp-private-images",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/Downloaded/WhatsApp Video/Private:/usr/src/app/whatsapp-private-video"
+        ]
+      },
+      {
+        "name": "immich_machine_learning",
+        "image": "ghcr.io/immich-app/immich-machine-learning:release",
+        "restart_policy": "always"
+      },
+      {
+        "name": "immich_postgres",
+        "image": "tensorchord/pgvecto-rs:pg14-v0.2.0",
+        "restart_policy": "always",
+        "ports": ["5432/tcp"],
+        "volumes":[
+          "/opt/immich-app/postgres:/var/lib/postgresql/data"
+        ]
+      },
+      {
+        "name": "immich_redis",
+        "image": "redis:6.2-alpine",
+        "restart_policy": "always",
+        "ports": ["6379/tcp"]
+      },
+      {
+        "name": "plex",
+        "image": "lscr.io/linuxserver/plex:latest",
+        "restart_policy": "unless-stopped",
+        "ports": ["32400/tcp"],
+        "volumes": [
+          "/var/lib/plexmediaserver:/config",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/Plex/Movies:/movies",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/Plex/Music:/music",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/Plex/Audio Books:/audiobooks",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/Plex/TV Shows:/tvshows",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/photos:/photos",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/photo-albums:/albums",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/arnes-fotos:/arnes-fotos",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/projects_video:/projects_video"
+        ]
+      },
+      {
+        "name": "syncthing",
+        "image": "lscr.io/linuxserver/syncthing:latest",
+        "restart_policy": "unless-stopped",
+        "ports": ["8384/tcp", "22000/tcp", "22000/udp", "21027/udp"],
+        "volumes": [
+          "/opt/syncthing/config:/config",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/images/Downloaded/WhatsApp Images/Private:/home/WhatsApp Images/Private",
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX/Media/images/Downloaded/WhatsApp Video/Private:/home/WhatsApp Video/Private"
+        ]
+      },
+      {
+        "name": "watchtower",
+        "image": "ghcr.io/nicholas-fedor/watchtower:latest",
+        "restart_policy": "always",
+        "ports": ["8080/tcp"],
+        "volumes": [
+          "/var/run/docker.sock:/var/run/docker.sock"
+        ]
+      },
+      {
+        "name": "nginx-proxy-manager-nginx_proxy_manager-1",
+        "image": "npm-certbot",
+        "restart_policy": "unless-stopped",
+        "ports": ["80/tcp", "81/tcp", "443/tcp"],
+        "volumes": [
+          "/opt/nginxproxymanager/data:/data",
+          "/opt/nginxproxymanager/letsencrypt:/etc/letsencrypt"
+        ]
+      },
+      {
+        "name": "nginx-proxy-manager-db-1",
+        "image": "jc21/mariadb-aria:latest",
+        "restart_policy": "unless-stopped",
+        "ports": ["3306/tcp"],
+        "volumes": [
+          "/opt/nginxproxymanager/mysql:/var/lib/mysql"
+        ]
+      },
+      {
+        "name": "pihole",
+        "image": "pihole/pihole:latest",
+        "restart_policy": "unless-stopped",
+        "ports": ["53/tcp", "53/udp", "67/udp", "82/tcp"],
+        "volumes":[
+          "/opt/pihole/etc-pihole:/etc/pihole",
+          "/opt/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+        ]
+      },
+      {
+        "name": "silverbullet-silverbullet-1",
+        "image": "ghcr.io/silverbulletmd/silverbullet:v2",
+        "restart_policy": "always",
+        "ports": ["3000/tcp"],
+        "volumes": [
+          "/opt/silverbullet:/space"
+        ]
+      },
+      {
+        "name": "dash-dev",
+        "image": "gatsby-alpine-node-20",
+        "restart_policy": "unless-stopped",
+        "ports": ["8081/tcp"],
+        "volumes": [
+          "/opt/dash/Dash-Server-Status-Dashboard-main"
+        ]
+      },
+      {
+        "name": "dash-prod",
+        "image": "gatsby-alpine-node-20",
+        "restart_policy": "no",
+        "ports": ["8082/tcp"],
+        "volumes": [
+          "/opt/dash/Dash-Server-Status-Dashboard-main"
+        ]
+      },
+      {
+        "name": "filebrowser_LilNasX",
+        "image": "filebrowser/filebrowser:s6",
+        "restart_policy": "unless-stopped",
+        "ports": ["1100/tcp"],
+        "volumes": [
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasX:/srv",
+          "/opt/filebrowser/LilNasX/filebrowser.db:/database/filebrowser.db",
+          "/opt/filebrowser/LilNasX/settings.json:/config/settings.json",
+          "/opt/filebrowser/LilNasX/branding:/branding"
+        ]
+      },
+      {
+        "name": "filebrowser_LilNasY",
+        "image": "filebrowser/filebrowser:s6",
+        "restart_policy": "unless-stopped",
+        "ports": ["1101/tcp"],
+        "volumes": [
+          "/srv/dev-disk-by-uuid-1806e0be-96d7-481c-afaa-90a97aca9f92/LilNasY:/srv",
+          "/opt/filebrowser/LilNasY/filebrowser.db:/database/filebrowser.db",
+          "/opt/filebrowser/LilNasY/settings.json:/config/settings.json",
+          "/opt/filebrowser/LilNasY/branding:/branding"
+        ]
+      },
+      {
+        "name": "filebrowser_LilNasZ",
+        "image": "filebrowser/filebrowser:s6",
+        "restart_policy": "unless-stopped",
+        "ports": ["1102/tcp"],
+        "volumes": [
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/LilNasZ:/srv",
+          "/opt/filebrowser/LilNasZ/filebrowser.db:/database/filebrowser.db",
+          "/opt/filebrowser/LilNasZ/settings.json:/config/settings.json",
+          "/opt/filebrowser/LilNasZ/branding:/branding"
+        ]
+      },
+      {
+        "name": "filebrowser_Plex",
+        "image": "filebrowser/filebrowser:s6",
+        "restart_policy": "unless-stopped",
+        "ports": ["1110/tcp"],
+        "volumes": [
+          "/srv/dev-disk-by-uuid-38c50e1a-cb9a-41c1-b3ca-ec1d9d224e5e/Plex:/srv",
+          "/opt/filebrowser/Plex/filebrowser.db:/database/filebrowser.db",
+          "/opt/filebrowser/Plex/settings.json:/config/settings.json",
+          "/opt/filebrowser/Plex/branding:/branding"
+        ]
+      }
+    ]
+  },
+  "network": {
+    "interfaces": [
+      {
+        "name": "enp1s0",
+        "state": "UP",
+        "ipv4": "192.168.178.69/24",
+        "role": "primary_lan"
+      },
+      {
+        "name": "wlp2s0",
+        "state": "DOWN",
+        "role": "wifi"
+      },
+      {
+        "name": "wgnet1",
+        "state": "UNKNOWN",
+        "ipv4": "10.192.1.254/24",
+        "role": "wireguard_overlay"
+      }
+    ],
+    "routing": {
+      "default_gateway": "192.168.178.1",
+      "lan_cidr": "192.168.178.0/24"
+    }
+  }
+}

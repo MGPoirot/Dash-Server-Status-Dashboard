@@ -1,0 +1,36 @@
+- Must be a complete, runnable Python version 3.12.12 script.
+- Must define a function: main() with NO INPUT PARAMETERS.
+- The only packages you can use are dnspython v.2.8.0, docker-py v.7.1.0, plexAPI v.4.17.2, psutil v.7.2.1, pydantic v.2.12.5, pydantic-core v.2.41.5, python-dotenv v.1.2.1, python-systemd v.235, requests v.2.32.5
+- main() must return a tuple of three values:
+  1. REQUIRED (string | number): the primary value.
+    - As number if display.visual.type == "gauge" | "number" | "counter" | "state"
+    - As string if display.visual.type == "text" | "version"
+  2. OPTIONAL (Dict[string: string | number] | None): additional values
+    - As Dict[string: number] if display.visual.type == "gauge" | "number" | "counter" | "state"
+    - As Dict[string: string] if display.visual.type == "text" | "version"
+  3. OPTIONAL (string | None): meta information, error messages, durations, log paths, etc.
+
+- The script MUST also include:
+  - if __name__ == "__main__": block
+  - In that block: call main(), serialize the returned dict as JSON, print it to stdout.
+  - Exit code rules:
+    * Exit 0 on successful measurement (even if value indicates a warning condition; alerting is handled by the dashboard).
+    * Exit 1 only if the script itself cannot perform the measurement at all (e.g., missing required system interfaces). In that case set "v" to a sensible sentinel (e.g., -404 or false) AND set "meta" to a clear error.
+
+- Available environment variables (use python-dotenv)
+  - Plex: PLEX_URL, PLEX_TOKEN, PLEX_MUSIC_LIBRARY
+  - Immich: IMMICH_DB_PASSWORD, IMMICH_INSTANCE_URL, IMMICH_API_READONLY_KEY, IMMICH_MAARTEN_USER_ID, IMMICH_FLEUR_USER_ID
+
+- The script output MUST be compatible with the configs JSON alarms: The primary monitored value must be in "v"/"s".
+- Numbers are displayed with a reduction of 2 decimals, so all numbers must be rounded to 2 decimals before whats of interest 
+  The script should round 12.34567 to 12.345 for it do be shown as 12.3% in the GUI.
+
+- Implementation constraints:
+  - Use the Server Profile to pick the most reliable local signal source (e.g., /proc, /sys, systemctl, docker CLI, df/findmnt, ss/curl).
+  - Do NOT hardcode /dev/sdX for external disks; use UUIDs and/or mountpoints from the profile.
+  - Keep runtime fast; add short timeouts for subprocess calls (e.g., 1–3s).
+  - Handle common failure modes cleanly and populate "meta" with actionable info.
+
+- Documentation:
+  - Provide the main function with a brief comment
+  - Use type hinting to clarify the possible outputs of the main function, for example "def main() -> Tuple[float, None, str]".

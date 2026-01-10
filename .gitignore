@@ -1,0 +1,32 @@
+# Oparational files
+node_modules/
+public/
+.cache/
+__pycache__/
+
+# Private environment variables
+.env
+.env.*
+
+# IDE dirs
+.vscode/
+.idea
+
+# the content folder contains folder that contain customized and private logs
+content/*/*.json
+content/*/*.py
+prompts/server.txt
+prompts/server.md
+prompts/scheduler.txt
+prompts/scheduler.md
+
+
+# Temporary staging files
+staging/*
+
+# excluded by the gatsby template
+src/gatsby-types.d.ts
+
+# Development specific code
+start-dev.sh
+caddy/Caddyfile-dev

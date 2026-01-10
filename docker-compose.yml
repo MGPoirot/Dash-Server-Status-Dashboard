@@ -1,0 +1,47 @@
+services:
+  dash-gatsby:
+    container_name: dash-gatsby
+    image: gatsby-alpine-node-20
+    working_dir: /app
+    command: ["/bin/sh", "/app/start-prod.sh"]
+    volumes:
+      - ${PROJECT_DIR}:/app
+      - /app/.cache
+      - /app/public
+    expose:
+      - "9000"
+    restart: unless-stopped
+    networks: [dashnet]
+
+  dash-json:
+    container_name: dash-json
+    image: node:20-alpine
+    working_dir: /srv
+    command: ["node", "/srv/json-server.js"]
+    volumes:
+      - ${PROJECT_DIR}:/srv:ro
+    environment:
+      - JSON_PORT=7000
+      - JSON_ROOT=/srv/content
+    expose:
+      - "7000"
+    restart: unless-stopped
+    networks: [dashnet]
+
+  dash-proxy:
+    container_name: dash-proxy
+    image: caddy:2-alpine
+    volumes:
+      - ${PROJECT_DIR}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    depends_on:
+      - gatsby-dash-prod
+      - gatsby-dash-dev
+      - dash-json
+    networks: [dashnet]
+
+networks:
+  dashnet:
+    driver: bridge

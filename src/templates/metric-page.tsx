@@ -12,6 +12,8 @@ import Collapsible from "../components/Collapsible/Collapsible";
 import VisualLoose from "../components/Visuals/Visuals";
 import { fetchConfig, fetchSeries } from "../methods/fetch";
 import { extractLatestValue } from "../methods/utils";
+import { StatusIcon } from "../components/status-icons";
+
 
 type ScriptFileNode = {
   name: string;
@@ -93,7 +95,7 @@ const MetricPage: React.FC<PageProps<MetricPageData, MetricPageContext>> = ({ da
   // You asked for fetchConfig + fetchSeries; keeping latest as-is.
   const latestValue = extractLatestValue(bakedLatestPoints);
   
-  const { emoji } = resolveMetricValue(liveMetric, latestValue);
+  const { status } = resolveMetricValue(liveMetric, latestValue);
 
   const scriptFile = allScripts.nodes.find((f) => f.name === fileName);
   const scriptFileName = scriptFile?.publicURL?.split("/").pop() ?? null;
@@ -139,7 +141,7 @@ const MetricPage: React.FC<PageProps<MetricPageData, MetricPageContext>> = ({ da
       <Navbar />
       <TextContainer>
         <h1>
-          {emoji} {liveMetric.label || fileName || liveMetric.metric_id}
+          <StatusIcon status={status}/> {liveMetric.label || fileName || liveMetric.metric_id}
         </h1>
 
         {visual ? (

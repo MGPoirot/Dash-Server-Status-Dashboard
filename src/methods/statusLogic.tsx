@@ -1,7 +1,6 @@
-import { AlertType, StatusToEmoji, metricStatus } from "../types/alerts";
+import { AlertType, metricStatus } from "../types/alerts";
 import { MetricConfigBasic, ValueMapType } from "../types/metric";
 import { PointValue } from "../types/nodes";
-import { statusEmoji } from "../types/alerts";
 
 export const AlertLogic = (alerts: AlertType[], latestValue: PointValue | undefined): metricStatus => {
   if ( !alerts  || alerts.length === 0) {
@@ -37,7 +36,6 @@ export const AlertLogic = (alerts: AlertType[], latestValue: PointValue | undefi
 type TileValueResult = {
   interpretedLatestValue: PointValue;
   status: metricStatus;
-  emoji: statusEmoji;
 };
 
 
@@ -66,18 +64,16 @@ export const resolveMetricValue = (
   latestValue: PointValue
 ): TileValueResult => {
   if (metric === undefined || latestValue === undefined) {
-    return { interpretedLatestValue: "NA", status: "stale", emoji: "❓" };
+    return { interpretedLatestValue: "NA", status: "stale" };
   }
 
   const interpretedLatestValue = metric.meaningMap ? interpretValue(latestValue, metric.meaningMap) : latestValue;
 
   let status: metricStatus = "ok";
-  let emoji: statusEmoji = "✅";
 
   if (metric.alerts) {
     status = AlertLogic(metric.alerts, latestValue);
-    emoji = StatusToEmoji[status];
   }
 
-  return { interpretedLatestValue, status, emoji };
+  return { interpretedLatestValue, status };
 };

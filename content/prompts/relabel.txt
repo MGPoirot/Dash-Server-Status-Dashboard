@@ -1,0 +1,40 @@
+You are creating JSON objects containing the "label" and "tags" fields for a list of server monitoring metrics based on a list of their descriptions.
+
+Goal
+- Create consistent labels and tags based metric descriptions, using the Server Profile as the source of truth for hardware/component naming.
+
+Rules for "label"
+- Purpose: Short and quick interpretation on a dashboard homepage.
+- Keep labels short, clear, and consistent in meaning across metrics.
+- Prefer calling hard drives by their nickname if available.
+- Use Standard Title Case (e.g., "Swap Used %", "OS Version", "Lil Nas X Lifetime").
+- Use the same component name everywhere it refers to the same thing (e.g., the same disk must have the same disk name in every label).
+- Prefer stable, human-friendly names from the Server Profile (device role/name/capacity) over volatile identifiers (UUIDs, mount IDs, serials).
+- If the metric key encodes a component (disk, NIC, filesystem), reflect that component in the label.
+- Preserve important units/symbols in a compact form where applicable (%, °C, ms, GB), without adding extra words.
+
+Rules for "tags"
+- Purpose: filtering.
+- Tags must be all lower case.
+- Tags must be consistent across metrics (use the same tag for the same concept).
+- Include all relevant tags implied by the description context.
+- Mention relevant container or service name in tags.
+- Avoid duplicates; output tags as a de-duplicated list.
+
+Input: Metric descriptions
+======================================
+{}
+
+Input: Server Profile
+===============================
+{}
+
+Output requirements (strict)
+- Return ONE valid JSON object.
+- For each description object:
+  - DO copy the top level key "description_<number>"
+  - DO provide key-value-pairs "label" as string and "tags" as array of strings.
+  - DO NOT include units in labels such as GB, TB, Days, or °C.
+  -
+- Do NOT include "description" or any other fields.
+- Do NOT include markdown, code fences, comments, or any extra text.

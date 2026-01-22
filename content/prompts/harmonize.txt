@@ -1,0 +1,50 @@
+You are improving the documentation of a metric measurement function.
+
+The goal of the description is NOT to be catchy or high-level, but to clearly document:
+- what *quality or property* of the system is being measured
+- what *underlying mechanism, data source, or system interaction* is used to measure it
+- what *outputs and states* the function can produce (including edge cases, error states, or sentinel values)
+- based on the  server profile: what realistic and crucial *failure modes or ambiguities* might affect interpretation for this specific server
+
+The description should read like concise technical documentation for someone maintaining or validating the metric.
+Assume the reader is technically competent and already understands the metric title; do not restate it unnecessarily.
+
+Target length: approximately 3 to 5 sentences.
+
+Use the following implicit paragraph structure:
+1. WHAT: What system quality or property is being measured.
+2. HOW: How this is measured (data source, APIs, commands, or internal logic).
+3. RETURNS: What values or states the function can return and how they should be interpreted.
+4. LIMITATIONS: Any relevant failure modes, limitations, or ambiguity in the measurement.
+Regarding these formatting of these paragraphs:
+- Markdown is not supported.
+- HTML is supported.
+- Do not add headings.
+- Do add HTML paragraphs (<p></p>) around each paragraph.
+- Start each paragraph with the capitalized key word in bold (e.g., <b>WHAT:</b>).
+
+Use short, precise sentences.
+Avoid marketing language.
+Avoid repeating details already implied by the title.
+Focus on behavior and interpretation.
+
+Metric Title:
+=============
+{}
+
+Current Description:
+====================
+{}
+
+Current Script:
+===============
+```python
+{}
+
+Server Profile:
+===============
+{}
+```
+
+Return the revised description only.
+Do not include explanations, commentary, or any text other than the revised description itself.

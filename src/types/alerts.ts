@@ -6,8 +6,6 @@ const ALERT_STATUSES = [
 
 export type alertPriority = typeof ALERT_STATUSES[number];
 
-type alertEmoji = "ℹ️" | "⚠️" | "🚨";
-
 type alertDirection = "above" | "below";
 
 export const METRIC_STATUSES = [
@@ -25,16 +23,6 @@ export const priorityRank: Record<metricStatus, number> = {
 };
 
 export type metricStatus = typeof METRIC_STATUSES[number];
-
-export type statusEmoji = "✅" | "❓" | alertEmoji;
-
-export const StatusToEmoji: Record<metricStatus, statusEmoji> = {
-  ok: "✅",
-  stale: "❓",
-  info: "ℹ️",
-  warning: "⚠️",
-  critical: "🚨",
-};
 
 export type AlertType = {
   threshold: number;

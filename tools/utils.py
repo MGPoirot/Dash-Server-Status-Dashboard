@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 import json
 
+
 def read_text(path: Path) -> str:
     if not path.exists():
         raise FileNotFoundError(f"Missing required file: {path}")

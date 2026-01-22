@@ -7,7 +7,7 @@ import { metricStatus } from "../../types/alerts";
 import { reduceByDecimals, extractLatestValue } from "../../methods/utils";
 import { MetricConfigBasic } from "../../types/metric";
 import { fetchConfig, fetchLatest } from "../../methods/fetch";
-
+import { StatusIcon } from "../status-icons";
 
 const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
   const metricId = metric?.metric_id;
@@ -51,7 +51,7 @@ const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
   }, [metricId]);
 
   const isEmpty = !liveMetric;
-  const { interpretedLatestValue, status, emoji } = resolveMetricValue(
+  const { interpretedLatestValue, status} = resolveMetricValue(
     liveMetric,
     liveLatestValue,
   );
@@ -66,7 +66,7 @@ const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
             <Title>{liveMetric?.label || liveMetric?.metric_id}</Title>
             <Meta>
               <span>
-                {emoji}{" "}
+                <StatusIcon status={status}/>{" "}
                 {typeof interpretedLatestValue === "number"
                   ? reduceByDecimals(interpretedLatestValue)
                   : interpretedLatestValue}{" "}

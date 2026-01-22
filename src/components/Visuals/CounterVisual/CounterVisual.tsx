@@ -122,6 +122,8 @@ const Digit = ({ digit, color }: DigitProps) => {
   );
 };
 
+
+
 const CounterVisual = ({
   hideAlerts = true,
   points,
@@ -130,14 +132,22 @@ const CounterVisual = ({
   unit,
 }: CounterRuntimeProps) => {
   const pointNow = points.at(-1);
-  const pointPast = points.at(nLatestPoints ? -nLatestPoints : -2);
+
+  const requestedBack =
+    typeof nLatestPoints === "number" && Number.isFinite(nLatestPoints)
+      ? Math.max(1, Math.trunc(nLatestPoints))
+      : 1;
+
+  const maxBack = Math.max(1, points.length - 1);
+  const safeBack = Math.min(requestedBack, maxBack);
+
+  const pointPast = points.length >= 2 ? points.at(-(safeBack + 1)) : undefined;
 
   const vNowRaw = pointNow?.v;
   const tNow = pointNow?.t;
-
   const vPastRaw = pointPast?.v;
   const tPast = pointPast?.t;
-
+  
   const status: metricStatus = useMemo(() => {
     if (hideAlerts === false) return "ok";
     return AlertLogic(alerts, vNowRaw);

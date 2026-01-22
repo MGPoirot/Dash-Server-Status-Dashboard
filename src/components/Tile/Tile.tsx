@@ -8,12 +8,15 @@ import { reduceByDecimals, extractLatestValue } from "../../methods/utils";
 import { MetricConfigBasic } from "../../types/metric";
 import { fetchConfig, fetchLatest } from "../../methods/fetch";
 import { StatusIcon } from "../status-icons";
+import { useLayout } from "../../styles/StyleWrapper";
 
 const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
   const metricId = metric?.metric_id;
 
   // Start with baked-in values, then replace with live values after load.
-  const [liveMetric, setLiveMetric] = React.useState<MetricConfigBasic | undefined>(metric);
+  const [liveMetric, setLiveMetric] = React.useState<
+    MetricConfigBasic | undefined
+  >(metric);
   const [liveLatestValue, setLiveLatestValue] = React.useState<any>(latestValue);
 
   React.useEffect(() => {
@@ -32,7 +35,7 @@ const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
           // Prevent overwriting built-in with fresh is fetch failed
           setLiveMetric(m);
         }
-        
+
         if (latest && Array.isArray(latest.points)) {
           // Prevent overwriting built-in with fresh is fetch failed
           const v = extractLatestValue(latest);
@@ -51,22 +54,34 @@ const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
   }, [metricId]);
 
   const isEmpty = !liveMetric;
-  const { interpretedLatestValue, status} = resolveMetricValue(
+  const { interpretedLatestValue, status } = resolveMetricValue(
     liveMetric,
-    liveLatestValue,
+    liveLatestValue
   );
+
+  const { tilesCollapsed } = useLayout();
+  const shouldCollapse = !isEmpty && tilesCollapsed && status === "ok";
 
   return (
     <TileLink to={to}>
-      <TileWrapper size="md" status={status as metricStatus}>
+      <TileWrapper
+        size="md"
+        status={status as metricStatus}
+        collapsed={shouldCollapse}
+      >
         {isEmpty ? (
           <div style={{ fontSize: "3rem", textAlign: "center" }}>➕</div>
+        ) : shouldCollapse ? (
+          <>
+            <StatusIcon status={status} />
+            <Title>{liveMetric?.label || liveMetric?.metric_id}</Title>
+          </>
         ) : (
           <>
             <Title>{liveMetric?.label || liveMetric?.metric_id}</Title>
             <Meta>
               <span>
-                <StatusIcon status={status}/>{" "}
+                <StatusIcon status={status} />{" "}
                 {typeof interpretedLatestValue === "number"
                   ? reduceByDecimals(interpretedLatestValue)
                   : interpretedLatestValue}{" "}

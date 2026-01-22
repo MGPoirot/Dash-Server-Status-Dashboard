@@ -14,23 +14,36 @@ type PromptPageContext = {
   txt: string | null;
 };
 
+const MAX_LEN = 25000;
+
 export default function PromptPage({ pageContext }: PageProps<unknown, PromptPageContext>) {
-  const { name, relativeDirectory, markdownHtml, txt } = pageContext;
+  const { name, markdownHtml, txt } = pageContext;
+
+  const truncatedTxt = React.useMemo(() => {
+    if (!txt) return null;
+    if (txt.length <= MAX_LEN) return txt;
+    return txt.slice(-MAX_LEN); // last 5000 chars
+  }, [txt]);
+
+  const wasTruncated = !!txt && txt.length > MAX_LEN;
 
   return (
     <StyleWrapper>
       <Navbar />
       <TextContainer dangerouslySetInnerHTML={{ __html: markdownHtml }} />
       <TextContainer>
-          {txt ? ( 
-            <CodeBlock 
-              code={txt}
-              lang='html'
-              fname={`prompts/${name}.txt`}
-            />
-          ) : (
-            <p>No prompt found.</p>
-          )}
+        {truncatedTxt ? (
+          <>
+            {wasTruncated && (
+              <i style={{ opacity: 0.7 }}>
+                Log truncated: showing last {MAX_LEN} characters (of {txt!.length}).
+              </i>
+            )}
+            <CodeBlock code={truncatedTxt} lang="html" fname={`prompts/${name}.txt`} />
+          </>
+        ) : (
+          <p>No prompt found.</p>
+        )}
       </TextContainer>
     </StyleWrapper>
   );

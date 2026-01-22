@@ -1,4 +1,3 @@
-// /opt/dash/gatsby-dash/src/styles/themes.ts
 // Lightweight design tokens for a ThemeProvider (styled-components / emotion / custom)
 import { metricStatus } from "../types/alerts";
 

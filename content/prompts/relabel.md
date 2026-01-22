@@ -1,10 +1,4 @@
-Relabel Prompt
+🏷️ Relabel Prompt
 ==============
 
-This prompt serves the `harmonize_configs` tool:
-
-```bash
-conda activate DashPy
-cd /opt/dash/Dash-Server-Status-Dashboard-main
-python -m tools.harmonize_configs
-```
+This prompt provides instructions to apply consistent rules to the labeling and consistent use of certain tags. It serves `python -m tools.harmonize_configs`.

@@ -11,7 +11,9 @@ Rules for "label"
 - Use the same component name everywhere it refers to the same thing (e.g., the same disk must have the same disk name in every label).
 - Prefer stable, human-friendly names from the Server Profile (device role/name/capacity) over volatile identifiers (UUIDs, mount IDs, serials).
 - If the metric key encodes a component (disk, NIC, filesystem), reflect that component in the label.
-- Preserve important units/symbols in a compact form where applicable (%, °C, ms, GB), without adding extra words.
+To avoid duplicity with information presented along with the value on the dashboard use a label that:
+- Avoids the word "Count" in labels because this is usually obvious.
+- Avoids using information already in the "unit" field such as "Days", "°C", "%", "Assets", etc.
 
 Rules for "tags"
 - Purpose: filtering.
@@ -20,6 +22,7 @@ Rules for "tags"
 - Include all relevant tags implied by the description context.
 - Mention relevant container or service name in tags.
 - Avoid duplicates; output tags as a de-duplicated list.
+
 
 Input: Metric descriptions
 ======================================
@@ -34,7 +37,5 @@ Output requirements (strict)
 - For each description object:
   - DO copy the top level key "description_<number>"
   - DO provide key-value-pairs "label" as string and "tags" as array of strings.
-  - DO NOT include units in labels such as GB, TB, Days, or °C.
-  -
 - Do NOT include "description" or any other fields.
 - Do NOT include markdown, code fences, comments, or any extra text.

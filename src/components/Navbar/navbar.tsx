@@ -1,3 +1,4 @@
+// src/components/Navbar/navbar.tsx
 import React, { useState } from "react";
 import { Link, graphql, useStaticQuery } from "gatsby";
 import {
@@ -12,7 +13,7 @@ import {
   RightSection,
   ThemeToggleButton,
 } from "./navbar.style";
-import { useTheme } from "../../styles/StyleWrapper";
+import { useLayout, useTheme } from "../../styles/StyleWrapper";
 import { lightTheme, darkTheme } from "../../styles/themes";
 
 const navItems = [
@@ -70,6 +71,8 @@ const Navbar: React.FC = () => {
   const { theme, setTheme } = useTheme();
   const isDark = theme.name === "dark";
 
+  const { tilesCollapsed, toggleTilesCollapsed } = useLayout();
+
   const handleToggleTheme = () => {
     setTheme(isDark ? lightTheme : darkTheme);
   };
@@ -97,6 +100,16 @@ const Navbar: React.FC = () => {
       </Nav>
 
       <RightSection>
+        <ThemeToggleButton
+          type="button"
+          onClick={toggleTilesCollapsed}
+          aria-label="Toggle compact tile layout"
+          title="Toggle compact tile layout"
+        >
+          <span className="dot" />
+          <span className="label">{tilesCollapsed ? "Compact" : "Full"}</span>
+        </ThemeToggleButton>
+
         <ThemeToggleButton
           type="button"
           onClick={handleToggleTheme}

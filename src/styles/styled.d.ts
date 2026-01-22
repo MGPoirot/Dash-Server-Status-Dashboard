@@ -1,7 +1,5 @@
 import 'styled-components';
 
-// /opt/dash/gatsby-dash/src/styles/styled.d.ts
-
 type LightTheme = typeof import('./themes').lightTheme;
 type DarkTheme = typeof import('./themes').darkTheme;
 

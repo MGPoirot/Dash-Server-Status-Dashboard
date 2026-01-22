@@ -1,4 +1,4 @@
-// /src/styles/StyleWrapper.tsx
+// src/styles/StyleWrapper.tsx
 import React, {
   createContext,
   useContext,
@@ -20,6 +20,16 @@ type ThemeContextValue = {
   setTheme: SetTheme;
 };
 
+type LayoutContextValue = {
+  /**
+   * When true, tiles with status "ok" render in a compact (collapsed) layout.
+   * Tiles with any other status are always rendered expanded.
+   */
+  tilesCollapsed: boolean;
+  setTilesCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleTilesCollapsed: () => void;
+};
+
 const defaultTheme: Theme = lightTheme;
 
 const ThemeContext = createContext<ThemeContextValue>({
@@ -30,6 +40,29 @@ const ThemeContext = createContext<ThemeContextValue>({
 });
 
 export const useTheme = (): ThemeContextValue => useContext(ThemeContext);
+
+const LayoutContext = createContext<LayoutContextValue>({
+  tilesCollapsed: true,
+  setTilesCollapsed: () => {
+    /* noop */
+  },
+  toggleTilesCollapsed: () => {
+    /* noop */
+  },
+});
+
+export const useLayout = (): LayoutContextValue => useContext(LayoutContext);
+
+/**
+ * Resolve initial tile layout:
+ * 1. cookie "tiles_collapsed" ("1" | "0")
+ * 2. fallback: collapsed by default
+ */
+const getInitialTilesCollapsed = (): boolean => {
+  const stored = getCookie("tiles_collapsed");
+  if (stored === "0") return false;
+  return true;
+};
 
 /**
  * Resolve initial theme:
@@ -69,6 +102,10 @@ export const StyleWrapper: React.FC<{
     getInitialTheme(initialTheme)
   );
 
+  const [tilesCollapsed, setTilesCollapsed] = useState<boolean>(() =>
+    getInitialTilesCollapsed()
+  );
+
   const setTheme: SetTheme = (next: any) => {
     if (typeof next === "function") {
       // function gets previous theme, returns a *partial* theme
@@ -91,12 +128,23 @@ export const StyleWrapper: React.FC<{
     setCookie("theme", theme.name);
   }, [theme.name]);
 
+  // Persist tile layout preference in a cookie on the client
+  useEffect(() => {
+    setCookie("tiles_collapsed", tilesCollapsed ? 1 : 0);
+  }, [tilesCollapsed]);
+
+  const toggleTilesCollapsed = () => setTilesCollapsed((v) => !v);
+
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        {children ?? null}
-      </ThemeProvider>
+      <LayoutContext.Provider
+        value={{ tilesCollapsed, setTilesCollapsed, toggleTilesCollapsed }}
+      >
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          {children ?? null}
+        </ThemeProvider>
+      </LayoutContext.Provider>
     </ThemeContext.Provider>
   );
 };

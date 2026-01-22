@@ -1,4 +1,4 @@
-Script Prompt
+🐍 Script Prompt
 =============
 
 This prompt provides the requirements and guidelines for the monitoring script.

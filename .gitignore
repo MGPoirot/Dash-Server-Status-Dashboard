@@ -3,6 +3,8 @@ node_modules/
 public/
 .cache/
 __pycache__/
+core
+core.*
 
 # Private environment variables
 .env
@@ -12,14 +14,16 @@ __pycache__/
 .vscode/
 .idea
 
-# the content folder contains folder that contain customized and private logs
-content/*/*.json
-content/*/*.py
+# the content folder contains folders with private/generated data
+content/series/
+content/latest/
+content/configs/
+content/scripts/
 content/prompts/server.txt
 content/prompts/server.md
 content/prompts/scheduler.txt
 content/prompts/scheduler.md
-content/prompts/scheduler.txt
+
 
 
 # Temporary staging files

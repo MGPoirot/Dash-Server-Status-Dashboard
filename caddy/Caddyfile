@@ -14,6 +14,9 @@
   handle /prompts/* {
     reverse_proxy dash-json:7000
   }
+  handle /tools/* {
+    reverse_proxy dash-json:7000
+  }
 
   handle {
     reverse_proxy dash-prod:9000

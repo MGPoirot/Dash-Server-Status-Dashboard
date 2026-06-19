@@ -17,8 +17,9 @@ conda install -c conda-forge \
   pydantic \
   python-systemd \
   -y
-pip install PlexAPI
-```
+pip install PlexAPI  
+```  
+
 We then have:
 
 | Package name   | Version |

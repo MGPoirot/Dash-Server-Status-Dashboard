@@ -36,6 +36,7 @@ mount("/series", path.join(ROOT, "series"));
 mount("/configs", path.join(ROOT, "configs"));
 mount("/scripts", path.join(ROOT, "scripts"));
 mount("/prompts", path.join(ROOT, "prompts"));
+mount("/tools", path.join(process.cwd(), "tools"));
 
 // Explicit 404 for anything else
 app.use((_req, res) => {

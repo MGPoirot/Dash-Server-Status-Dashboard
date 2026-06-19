@@ -25,6 +25,7 @@ const navItems = [
   // Integrations page will be added at a later stage
   { to: "/prompt", label: "Prompts" },
   { to: "/scheduler", label: "Scheduler" },
+  { to: "/tools", label: "Tools" },
   // { to: "/integrations", label: "Integrations" }
 ];
 

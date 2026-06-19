@@ -20,6 +20,7 @@ import json
 import os
 import pkgutil
 import shutil
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import TypedDict, Union
@@ -50,6 +51,10 @@ Point = Union[StringPoint, NumericPoint]
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Retry config — env-overridable so the scheduler can tune without code changes
+_RUNNER_MAX_RETRIES = int(os.environ.get("DASH_RUNNER_MAX_RETRIES", "2"))
+_RUNNER_RETRY_DELAY = float(os.environ.get("DASH_RUNNER_RETRY_DELAY", "30"))
 
 
 def _utc_timestamp_iso() -> str:
@@ -157,6 +162,17 @@ def _build_point(
     return point
 
 
+_ERROR_SENTINEL = -404.0
+
+
+def _is_error(value) -> bool:
+    """Return True if value is the standard error sentinel (-404 / -404.0)."""
+    try:
+        return float(value) == _ERROR_SENTINEL
+    except (TypeError, ValueError):
+        return False
+
+
 def run_metric(
     metric_id: str,
     *,
@@ -172,6 +188,17 @@ def run_metric(
     module = importlib.import_module(f"{package_name}.{metric_id}")
 
     value, dictionary, meta = module.main()
+
+    for attempt in range(_RUNNER_MAX_RETRIES):
+        if not _is_error(value):
+            break
+        print(
+            f"{metric_id} returned error on attempt {attempt + 1}, "
+            f"retrying in {_RUNNER_RETRY_DELAY:.0f}s…",
+            file=os.sys.stderr,
+        )
+        time.sleep(_RUNNER_RETRY_DELAY)
+        value, dictionary, meta = module.main()
 
     point = _build_point(
         timestamp=ts,

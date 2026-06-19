@@ -14,6 +14,8 @@ exports.createSchemaCustomization = ({ actions }) => {
 
     type MetricConfigDisplay {
       visual: MetricConfigVisual
+      tile_span: Int
+      charts: [String]
     }
 
     type MetricConfigVisual {
@@ -24,6 +26,25 @@ exports.createSchemaCustomization = ({ actions }) => {
       hideAlerts: Boolean
       nLatestPoints: Int
       colorMap: JSON
+    }
+
+    type MetricPoint {
+      t: String
+      v: Float
+      s: String
+      vv: JSON
+      ss: JSON
+      meta: String
+    }
+
+    type MetricSeries implements Node {
+      metric_id: String
+      points: [MetricPoint]
+    }
+
+    type MetricLatest implements Node {
+      metric_id: String
+      points: [MetricPoint]
     }
 
     type MarkdownRemarkFields {

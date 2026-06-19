@@ -27,3 +27,9 @@ Three tools are available to manage the dashboard. They can all be used with `co
 * `add_metric`: Invokes Claude to generate a new config and script file based on a user provided monitor request.
 * `delete_metric`: Deletes a metric across the file system.
 * `harmonize_configs`: Updates descriptions, labels, and tags using Claude.
+
+# Scheduler
+The scheduler is ran as a systemd unit at `/etc/systemd/system/dash-scheduler.service`. Check if the scheduler is up with
+```bash
+systemctl status dash-scheduler.service
+```

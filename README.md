@@ -24,7 +24,7 @@ This layout makes it easy to scan the system and spot issues without reading num
 
 ## Mobile support, dark mode, and PWA
 
-![Mobile dashboard](documents/screenshots/mobile.png)
+![Mobile dashboard](static/preview.png)
 
 Dash works well on mobile devices and supports both light and dark themes.
 

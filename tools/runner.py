@@ -173,6 +173,89 @@ def _is_error(value) -> bool:
         return False
 
 
+def _load_config(metric_id: str, *, root: Path = ROOT) -> dict:
+    path = root / "content" / "configs" / f"{metric_id}.json"
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _read_old_latest_value(metric_id: str, *, root: Path = ROOT) -> Scalar | None:
+    path = root / "content" / "latest" / f"{metric_id}.json"
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        points = data.get("points", [])
+        if not points:
+            return None
+        p = points[-1]
+        return p.get("v", p.get("s"))
+    except Exception:
+        return None
+
+
+def _eval_is_critical(value: Scalar | None, alerts: list) -> bool:
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        return False
+    for alert in alerts:
+        if not isinstance(alert, dict) or alert.get("priority") != "critical":
+            continue
+        threshold = alert.get("threshold")
+        direction = alert.get("direction")
+        if not isinstance(threshold, (int, float)) or isinstance(threshold, bool):
+            continue
+        if direction == "above" and value > threshold:
+            return True
+        if direction == "below" and value < threshold:
+            return True
+    return False
+
+
+def _format_critical_status(value: Scalar, config: dict) -> str:
+    meaning_map = config.get("meaningMap", {})
+    # try "1.0", then "1" for whole-number floats
+    keys = [str(value)]
+    if isinstance(value, float) and value == int(value):
+        keys.append(str(int(value)))
+    for k in keys:
+        if k in meaning_map:
+            return f"🔴 {meaning_map[k]}"
+    return f"🔴 {value}"
+
+
+def _maybe_notify_whatsapp(
+    metric_id: str,
+    new_point: Point,
+    old_value: Scalar | None,
+    *,
+    root: Path = ROOT,
+) -> None:
+    config = _load_config(metric_id, root=root)
+    if not config.get("notify_whatsapp"):
+        return
+    alerts = config.get("alerts", [])
+    new_value = new_point.get("v", new_point.get("s"))
+    if not _eval_is_critical(new_value, alerts):
+        return
+    if _eval_is_critical(old_value, alerts):
+        return  # already critical — don't repeat
+    label = config.get("label", metric_id)
+    status_str = _format_critical_status(new_value, config)
+    try:
+        _wa_dir = str(root / "src" / "whatsapp_integration")
+        if _wa_dir not in os.sys.path:
+            os.sys.path.insert(0, _wa_dir)
+        from whatsapp_notification import whatsapp_status_update  # noqa: PLC0415
+        whatsapp_status_update(label, status_str)
+        print(f"WhatsApp sent for {metric_id}: {label!r} → {status_str!r}")
+    except Exception as exc:
+        print(f"WhatsApp notification failed for {metric_id}: {exc}", file=os.sys.stderr)
+
+
 def run_metric(
     metric_id: str,
     *,
@@ -211,8 +294,10 @@ def run_metric(
         print(metric_id, json.dumps(point, indent=2))
 
     if not dry_run:
+        old_value = _read_old_latest_value(metric_id, root=root)
         write_latest(metric_id, point, root=root)
         append_series(metric_id, point, root=root)
+        _maybe_notify_whatsapp(metric_id, point, old_value, root=root)
 
     return point
 

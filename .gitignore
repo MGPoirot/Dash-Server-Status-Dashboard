@@ -35,3 +35,7 @@ src/gatsby-types.d.ts
 # Development specific code
 start-dev.sh
 caddy/Caddyfile-dev
+
+# Claude Code files
+CLAUDE.md
+.claude/

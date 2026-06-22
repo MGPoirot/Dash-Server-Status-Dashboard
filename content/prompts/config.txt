@@ -24,6 +24,7 @@ OPTIONAL keys (MAY be present):
 - "tags"
 - "meaningMap"
 - "alerts"
+- "notify_whatsapp"
 
 FIELD DEFINITIONS AND CONSTRAINTS:
 
@@ -163,6 +164,13 @@ FIELD DEFINITIONS AND CONSTRAINTS:
   - "threshold": number
   - "direction": string, MUST be either "above" or "below"
   - "priority": string, MUST be one of "info", "warning", "critical"
+
+13. "notify_whatsapp"
+- OPTIONAL
+- Type: boolean
+- Default: false (omit the field entirely when not needed)
+- When true: sends a WhatsApp message the first time this metric transitions into a critical alert state.
+- CONSTRAINT: MUST NOT be true unless at least one alert with "priority": "critical" is defined.
 
 ADDITIONAL RULES:
 - Do NOT include fields with null values.

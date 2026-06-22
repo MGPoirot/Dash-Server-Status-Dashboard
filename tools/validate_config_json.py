@@ -33,6 +33,7 @@ ALLOWED_TOP_KEYS = {
     "meaningMap",
     "alerts",
     "display",
+    "notify_whatsapp",
 }
 
 REQUIRED_TOP_KEYS = {
@@ -221,6 +222,22 @@ def validate_top_level(obj: Any, errors: List[str]) -> None:
                         errors.append(f"{path}.priority: must be a string")
                     elif a["priority"] not in ALERT_PRIORITY_ENUM:
                         errors.append(f"{path}.priority: must be one of {sorted(ALERT_PRIORITY_ENUM)}")
+
+    # notify_whatsapp
+    if "notify_whatsapp" in obj:
+        nw = obj["notify_whatsapp"]
+        if not isinstance(nw, bool):
+            errors.append("root.notify_whatsapp: must be a boolean")
+        elif nw:
+            alerts = obj.get("alerts", [])
+            has_critical = any(
+                isinstance(a, dict) and a.get("priority") == "critical"
+                for a in alerts
+            )
+            if not has_critical:
+                errors.append(
+                    "root.notify_whatsapp: cannot be true without at least one alert with priority 'critical'"
+                )
 
     # display
     if "display" in obj:

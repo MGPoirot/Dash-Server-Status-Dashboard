@@ -22,7 +22,7 @@ This layout makes it easy to scan the system and spot issues without reading num
 
 ---
 
-## Mobile support and dark mode
+## Mobile support, dark mode, and PWA
 
 ![Mobile dashboard](documents/screenshots/mobile.png)
 
@@ -34,7 +34,7 @@ Highlights:
 - Dark mode is fully supported and consistent across pages
 - Navigation remains accessible without sacrificing information density
 
-This makes Dash usable not just as a wallboard, but also as a quick on-the-go status check.
+Dash is also a Progressive Web App (PWA). It can be installed directly from the browser on Android, iOS, and desktop — no app store required. Once installed, it launches as a standalone app with no browser chrome, and a service worker keeps the last-loaded state available offline.
 
 ---
 
@@ -106,16 +106,33 @@ There is no external cron setup to reverse-engineer; scheduling is explicit and 
 
 ---
 
+## WhatsApp notifications
+
+Dash can send WhatsApp messages when a metric changes status, using the Meta (WhatsApp Business) Graph API.
+
+Notifications are sent via a pre-approved message template and deliver a message of the form:
+> *Hello, the status of your [metric] has changed to [status] status.*
+
+The integration is a small Python module (`src/whatsapp_integration/`) that is imported by metric scripts when alert conditions are met. Credentials are configured in `.env`. A test CLI is included:
+
+```bash
+python3 -m tools.test_whatsapp --metric <metric_id>
+python3 -m tools.test_whatsapp --subject "Storage" --status "🔴 90%"
+```
+
+---
+
 ## Current features
 
-Already implemented:
 - Tile-based homepage showing key metric information and latest values
 - Dedicated pages per metric showing config, latest value, and series data
 - Status-based visual cues on the homepage
 - Light and dark mode
 - Responsive navigation for desktop and mobile
+- Progressive Web App (PWA) — installable, offline-capable
 - Built-in scheduler with UI visibility
 - LLM-assisted metric generation and validation
+- WhatsApp notifications via Meta Graph API
 
 ## Future directions
 

@@ -1,6 +1,10 @@
 import type { GatsbyConfig } from "gatsby";
 import path from "path";
 
+// Scheduler and metric runners write path.json.tmp, then rename it into place.
+// Gatsby's watcher stats the temp path after it is already gone.
+const ignoreTempWrites = ["**/*.tmp"];
+
 const config: GatsbyConfig = {
   siteMetadata: {
     title: "Dash",
@@ -40,6 +44,7 @@ const config: GatsbyConfig = {
       options: {
         name: "contentPages",
         path: "./content/pages/",
+        ignore: ignoreTempWrites,
       },
       __key: "contentPages",
     },
@@ -48,6 +53,7 @@ const config: GatsbyConfig = {
       options: {
         name: "prompts",
         path: "./content/prompts/",
+        ignore: ignoreTempWrites,
       },
       __key: "prompts",
     },
@@ -56,6 +62,7 @@ const config: GatsbyConfig = {
       options: {
         name: "configs",
         path: path.resolve(__dirname, "content/configs"),
+        ignore: ignoreTempWrites,
       },
     },
     {
@@ -63,6 +70,7 @@ const config: GatsbyConfig = {
       options: {
         name: "series",
         path: path.resolve(__dirname, "content/series"),
+        ignore: ignoreTempWrites,
       },
     },
     {
@@ -70,6 +78,7 @@ const config: GatsbyConfig = {
       options: {
         name: "latest",
         path: path.resolve(__dirname, "content/latest"),
+        ignore: ignoreTempWrites,
       },
     },
     {
@@ -77,6 +86,7 @@ const config: GatsbyConfig = {
       options: {
         name: "scripts",
         path: path.resolve(__dirname, "content/scripts"),
+        ignore: ignoreTempWrites,
       },
     },
     {

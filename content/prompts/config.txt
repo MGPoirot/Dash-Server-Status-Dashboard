@@ -169,7 +169,7 @@ FIELD DEFINITIONS AND CONSTRAINTS:
 - OPTIONAL
 - Type: boolean
 - Default: false (omit the field entirely when not needed)
-- When true: sends a WhatsApp message the first time this metric transitions into a critical alert state.
+- When true: sends a WhatsApp message the first time this metric transitions into a critical alert state. If the stored value is an IPv4 address, a change from the last stored address also sends a message whose status text is the new address. The first address and failed lookups do not send.
 - CONSTRAINT: MUST NOT be true unless at least one alert with "priority": "critical" is defined.
 
 ADDITIONAL RULES:

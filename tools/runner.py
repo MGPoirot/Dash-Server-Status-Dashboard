@@ -215,6 +215,45 @@ def _eval_is_critical(value: Scalar | None, alerts: list) -> bool:
     return False
 
 
+def _is_ipv4(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    parts = value.split(".")
+    if len(parts) != 4:
+        return False
+    for part in parts:
+        if not part.isdigit():
+            return False
+        number = int(part)
+        if number > 255 or (len(part) > 1 and part.startswith("0")):
+            return False
+    return True
+
+
+def _previous_ipv4(metric_id: str, new_ip: str, *, root: Path = ROOT) -> str | None:
+    """Last stored public address before the point just appended."""
+    path = root / "content" / "series" / f"{metric_id}.json"
+    if not path.is_file():
+        return None
+    try:
+        points = json.loads(path.read_text(encoding="utf-8")).get("points") or []
+    except Exception:
+        return None
+
+    skipped_current = False
+    for point in reversed(points):
+        if not isinstance(point, dict):
+            continue
+        stored = point.get("s")
+        if not _is_ipv4(stored):
+            continue
+        if not skipped_current and stored == new_ip:
+            skipped_current = True
+            continue
+        return stored
+    return None
+
+
 def _format_critical_status(value: Scalar, config: dict) -> str:
     meaning_map = config.get("meaningMap", {})
     # try "1.0", then "1" for whole-number floats
@@ -227,6 +266,18 @@ def _format_critical_status(value: Scalar, config: dict) -> str:
     return f"🔴 {value}"
 
 
+def _send_whatsapp(metric_id: str, label: str, status_str: str, *, root: Path) -> None:
+    try:
+        _wa_dir = str(root / "src" / "whatsapp_integration")
+        if _wa_dir not in os.sys.path:
+            os.sys.path.insert(0, _wa_dir)
+        from whatsapp_notification import whatsapp_status_update  # noqa: PLC0415
+        whatsapp_status_update(label, status_str)
+        print(f"WhatsApp sent for {metric_id}: {label!r} → {status_str!r}")
+    except Exception as exc:
+        print(f"WhatsApp notification failed for {metric_id}: {exc}", file=os.sys.stderr)
+
+
 def _maybe_notify_whatsapp(
     metric_id: str,
     new_point: Point,
@@ -237,23 +288,23 @@ def _maybe_notify_whatsapp(
     config = _load_config(metric_id, root=root)
     if not config.get("notify_whatsapp"):
         return
-    alerts = config.get("alerts", [])
     new_value = new_point.get("v", new_point.get("s"))
+    label = config.get("label", metric_id)
+
+    # A public address is stored as text. Notify only when a real address
+    # replaces a different real address, and put that new address in the message.
+    if isinstance(new_value, str) and _is_ipv4(new_value):
+        previous_ip = _previous_ipv4(metric_id, new_value, root=root)
+        if previous_ip and previous_ip != new_value:
+            _send_whatsapp(metric_id, label, new_value, root=root)
+        return
+
+    alerts = config.get("alerts", [])
     if not _eval_is_critical(new_value, alerts):
         return
     if _eval_is_critical(old_value, alerts):
         return  # already critical — don't repeat
-    label = config.get("label", metric_id)
-    status_str = _format_critical_status(new_value, config)
-    try:
-        _wa_dir = str(root / "src" / "whatsapp_integration")
-        if _wa_dir not in os.sys.path:
-            os.sys.path.insert(0, _wa_dir)
-        from whatsapp_notification import whatsapp_status_update  # noqa: PLC0415
-        whatsapp_status_update(label, status_str)
-        print(f"WhatsApp sent for {metric_id}: {label!r} → {status_str!r}")
-    except Exception as exc:
-        print(f"WhatsApp notification failed for {metric_id}: {exc}", file=os.sys.stderr)
+    _send_whatsapp(metric_id, label, _format_critical_status(new_value, config), root=root)
 
 
 def run_metric(

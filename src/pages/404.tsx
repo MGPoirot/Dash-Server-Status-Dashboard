@@ -1,33 +1,34 @@
-import * as React from "react"
-import { Link, HeadFC, PageProps } from "gatsby"
-import StyleWrapper from "../styles/StyleWrapper"
-import Navbar from "../components/Navbar/navbar"
-import TextContainer from "../styles/PageWrapper" 
+// src/pages/404.tsx
+import * as React from "react";
+import { Link, HeadFC, PageProps } from "gatsby";
+import StyleWrapper from "../styles/StyleWrapper";
+import Navbar from "../components/Navbar/navbar";
+import TextContainer from "../styles/PageWrapper";
+import { StatusIcon } from "../components/status-icons";
+import CounterVisual from "../components/Visuals/CounterVisual/CounterVisual";
 
-const pageStyles = {
-  color: "#232129",
-  padding: "96px",
-  fontFamily: "-apple-system, Roboto, sans-serif, serif",
-}
 const NotFoundPage: React.FC<PageProps> = () => {
   return (
     <StyleWrapper>
       <Navbar />
       <TextContainer>
-        <h1>Page not found</h1>
-        <p>Sorry 😔, we could not find what you were looking for.</p>
-        <p><Link to="/">Go home</Link>
-          {process.env.NODE_ENV === "development" ? ( 
-            <>
-              {" "} or try creating a page in <code>src/pages/</code>.
-            </>
-          ) : null}
+        <h1>
+          <StatusIcon status="critical" /> Page Not Found
+        </h1>
+        <CounterVisual
+          type="counter"
+          points={[{ t: "", v: 404 }]}
+          alerts={[{ threshold: -1, direction: "above", priority: "critical" }]}
+        />
+        <p>
+          The page you were looking for does not exist.{" "}
+          <Link to="/">Return to the homepage</Link>.
         </p>
-        </TextContainer>
+      </TextContainer>
     </StyleWrapper>
-  )
-}
+  );
+};
 
-export default NotFoundPage
+export default NotFoundPage;
 
-export const Head: HeadFC = () => <title>Not found</title>
+export const Head: HeadFC = () => <title>404 – Not Found | Dash</title>;

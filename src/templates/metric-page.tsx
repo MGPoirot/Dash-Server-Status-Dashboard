@@ -10,6 +10,7 @@ import TextContainer from "../styles/PageWrapper";
 import CodeBlock from "../components/CodeBlock";
 import Collapsible from "../components/Collapsible/Collapsible";
 import VisualLoose from "../components/Visuals/Visuals";
+import HistoryChart from "../components/HistoryChart/HistoryChart";
 import { fetchConfig, fetchSeries } from "../methods/fetch";
 import { extractLatestValue } from "../methods/utils";
 import { StatusIcon } from "../components/status-icons";
@@ -136,6 +137,9 @@ const MetricPage: React.FC<PageProps<MetricPageData, MetricPageContext>> = ({ da
   }, [visibleSection, scriptFile?.publicURL]);
 
   const visual = liveMetric.display?.visual;
+  const showHistory =
+    visual?.type === "gauge" || visual?.type === "number" || visual?.type === "counter";
+
   return (
     <StyleWrapper>
       <Navbar />
@@ -154,6 +158,18 @@ const MetricPage: React.FC<PageProps<MetricPageData, MetricPageContext>> = ({ da
           />
         ) : (
           <p>No visual selected</p>
+        )}
+
+        {showHistory && visual && (
+          <HistoryChart
+            points={liveSeriesPoints}
+            alerts={liveMetric.alerts}
+            unit={liveMetric.unit}
+            min={"min" in visual && typeof visual.min === "number" ? visual.min : undefined}
+            max={"max" in visual && typeof visual.max === "number" ? visual.max : undefined}
+            invert_y={"invert_y" in visual ? visual.invert_y : undefined}
+            hideAlerts={"hideAlerts" in visual ? visual.hideAlerts : undefined}
+          />
         )}
 
         <p
@@ -244,7 +260,7 @@ export const query = graphql`
       }
     }
 
-    allMetricLatest {
+    allMetricLatest(filter: { metric_id: { eq: $metric_id } }) {
       nodes {
         metric_id
         points {
@@ -255,7 +271,7 @@ export const query = graphql`
       }
     }
 
-    allMetricSeries {
+    allMetricSeries(filter: { metric_id: { eq: $metric_id } }) {
       nodes {
         metric_id
         points {

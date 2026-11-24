@@ -102,3 +102,23 @@ def whatsapp_status_update(subject: str, status: str) -> None:
         raise RuntimeError(
             f"WhatsApp API request failed with HTTP {response.status_code}: {error_body}"
         )
+
+def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Send a WhatsApp status update.",
+    )
+    parser.add_argument(
+        "subject",
+        help='Subject of the update, e.g. "Server Migration".',
+    )
+    parser.add_argument(
+        "status",
+        help='New status, e.g. "Ongoing".',
+    )
+    args = parser.parse_args()
+    whatsapp_status_update(args.subject, args.status)
+
+
+if __name__ == "__main__":
+    main()

@@ -3,6 +3,33 @@ const path = require("path");
 const fs = require("fs");
 const { createFilePath } = require("gatsby-source-filesystem");
 
+// Metric runners keep writing content/ while `gatsby build` is in progress.
+// Leave the initial scan in place, then stop watching so those writes are not
+// re-parsed into the node store for the rest of the build.
+exports.onPreInit = () => {
+  if (process.env.gatsby_executing_command !== "build") return;
+
+  const chokidar = require("chokidar");
+  if (chokidar.watch.__dashBuildPatch) return;
+
+  const originalWatch = chokidar.watch.bind(chokidar);
+  const patchedWatch = (watchPath, options = {}) => {
+    const pathText = Array.isArray(watchPath) ? watchPath.join(",") : String(watchPath);
+    const watchesContent = pathText.includes(`${path.sep}content${path.sep}`) || pathText.includes("/content/");
+    const watcher = originalWatch(watchPath, options);
+    if (!watchesContent) return watcher;
+
+    watcher.once("ready", () => {
+      process.nextTick(() => {
+        watcher.close();
+      });
+    });
+    return watcher;
+  };
+  patchedWatch.__dashBuildPatch = true;
+  chokidar.watch = patchedWatch;
+};
+
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 

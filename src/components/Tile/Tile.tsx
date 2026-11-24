@@ -17,7 +17,7 @@ const Tile: React.FC<TileProps> = ({ to, metric, latestValue }) => {
   const [liveMetric, setLiveMetric] = React.useState<
     MetricConfigBasic | undefined
   >(metric);
-  const [liveLatestValue, setLiveLatestValue] = React.useState<any>(latestValue);
+  const [liveLatestValue, setLiveLatestValue] = React.useState<any>(undefined);
 
   React.useEffect(() => {
     if (!metricId) return;

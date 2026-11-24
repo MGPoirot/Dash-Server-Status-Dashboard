@@ -60,8 +60,20 @@ function normTag(tag: string): string {
   return tag.trim().toLowerCase();
 }
 
+// Help guides are stored as metrics, but their string values are pages of
+// text. They stay available on their own pages and are omitted from the grid.
+const DASHBOARD_HIDDEN_TAGS = new Set(["documentation"]);
+
+function hiddenFromDashboard(metric: MetricConfigBasic): boolean {
+  return (metric.tags ?? []).some((tag) =>
+    DASHBOARD_HIDDEN_TAGS.has(normTag(tag))
+  );
+}
+
 const IndexPage: React.FC<PageProps<IndexPageData>> = ({ data }) => {
-  const metrics = data?.allMetricConfig?.nodes ?? [];
+  const metrics = (data?.allMetricConfig?.nodes ?? []).filter(
+    (metric) => !hiddenFromDashboard(metric)
+  );
   const latest = data?.allMetricLatest?.nodes ?? [];
 
   // Build a quick lookup table: metric_id -> latest value
